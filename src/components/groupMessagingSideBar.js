@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { useChatStore } from "../../src/core/public/store/useChatStore";
 import groupUserIcon from "../assets/images/group.png";
+import { useChatStore } from "../store/useChatStore";
 
 const GroupSidebar = () => {
   const { getGroups, groups, selectedGroup, setSelectedGroup, isGroupsLoading, getGroupMessages } = useChatStore();

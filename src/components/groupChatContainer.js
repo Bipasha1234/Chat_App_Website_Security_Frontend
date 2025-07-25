@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import userPlaceholder from "../assets/images/group.png";
 import GroupChatHeader from "../components/groupChatHeader";
 import GroupMessageInput from "../components/groupMessageInput";
-import { useAuthStore } from "../core/public/store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
+import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 const GroupChatContainer = () => {
   const {

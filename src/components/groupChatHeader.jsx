@@ -1,9 +1,10 @@
 import { Contact, LogOutIcon, MoreVertical, Search, X } from "lucide-react";
 import { useState } from "react";
-import { useChatStore } from "../../src/core/public/store/useChatStore";
+import { toast } from "react-hot-toast";
 import group from "../assets/images/group.png";
 import ConfirmationModal from "../components/confirmationModel";
 import ContactInfo from "../components/groupContactInfo";
+import { useChatStore } from "../store/useChatStore";
 
 const GroupChatHeader = ({ onSearch }) => {
   const { selectedGroup, setSelectedGroup, getGroups, leaveGroup } = useChatStore();

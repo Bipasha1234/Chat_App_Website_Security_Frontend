@@ -2,7 +2,7 @@ import NoChatSelected from "../../components/NoChatSelected";
 import SideBar from "../../components/SideBar";
 import GroupChatContainer from "../../components/groupChatContainer";
 import GroupMessagingSideBar from "../../components/groupMessagingSideBar";
-import { useChatStore } from "../public/store/useChatStore";
+import { useChatStore } from "../../store/useChatStore";
 
 const GroupChat = () => {
   const { selectedGroup } = useChatStore(); 

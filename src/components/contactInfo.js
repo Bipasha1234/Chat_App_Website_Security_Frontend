@@ -1,9 +1,10 @@
 import { Image, ShieldAlert, Trash2, X } from "lucide-react";
 import { useState } from "react";
-import { useChatStore } from "../../src/core/public/store/useChatStore";
+
 import userPlaceholder from "../assets/images/user.png";
-import ConfirmationModal from "./confirmationModel";
-import MediaFilesDocs from "./mediaDocs";
+import ConfirmationModal from "../components/confirmationModel";
+import MediaFilesDocs from "../components/mediaDocs";
+import { useChatStore } from "../store/useChatStore";
 
 const ContactInfo = ({ onClose }) => {
   const { selectedUser, deleteChat, blockUser, getBlockedUsers, getUsers, setSelectedUser } = useChatStore();

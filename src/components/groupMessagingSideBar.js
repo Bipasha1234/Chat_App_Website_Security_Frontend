@@ -30,8 +30,8 @@ const GroupSidebar = () => {
           </h1>
         </div>
         <div className="p-4">
-          <div className="input input-bordered flex items-center gap-2 dark:bg-base-700 dark:border-base-600">
-            <FiSearch className="text-gray-500 dark:text-gray-400" />
+          <div className="flex items-center gap-2 border border-blue-300 rounded-md px-3 py-2">
+            <FiSearch className="text-blue-600 dark:text-gray-400" />
             <input
               type="text"
               placeholder="Search groups..."

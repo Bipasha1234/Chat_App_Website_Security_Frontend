@@ -104,7 +104,7 @@ const GroupContactInfo = ({ onClose }) => {
     try {
       await leaveGroup(selectedGroup._id);  // Calls leaveGroup method from store
       console.log("Successfully left the group");
-      onClose();  // Optionally close the modal after leaving the group
+      onClose();  
     } catch (error) {
       console.error("Error leaving the group:", error);
     }
@@ -112,7 +112,7 @@ const GroupContactInfo = ({ onClose }) => {
 
   return (
     <>
-      <div className="absolute top-0 left-0 font-open-sans w-full h-screen bg-base-100 shadow-lg p-6 z-50 overflow-y-auto">
+      <div className="absolute top-0 left-0 font-open-sans w-full h-screen bg-white shadow-lg p-6 z-50 overflow-y-auto">
         {/* Header */}
         <div className="flex gap-5 border-b pb-2">
           <button onClick={onClose} className=" ">

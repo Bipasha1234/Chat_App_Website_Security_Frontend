@@ -1,16 +1,16 @@
-import { Camera, Mail, Pencil, User } from "lucide-react"; // Import Pencil icon for edit
+import { Camera, Mail, Pencil, User } from "lucide-react";
 import { useState } from "react";
-import userPlaceholder from "../../../assets/images/user.png";
-import ChatContainer from "../../../components/ChatContainer";
-import NoChatSelected from "../../../components/NoChatSelected";
-import SideBar from "../../../components/SideBar";
-import { useAuthStore } from "../../../store/useAuthStore";
-import { useChatStore } from "../../../store/useChatStore";
-
+import userPlaceholder from "../../assets/images/user.png";
+import ChatContainer from "../../components/ChatContainer";
+import NoChatSelected from "../../components/NoChatSelected";
+import SideBar from "../../components/SideBar";
+import { useAuthStore } from "../../store/useAuthStore";
+import { useChatStore } from "../../store/useChatStore";
 
 const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
   const { selectedUser } = useChatStore();
+
   const [selectedImg, setSelectedImg] = useState(null);
   const [editingFullName, setEditingFullName] = useState(false);
   const [editingEmail, setEditingEmail] = useState(false);
@@ -22,7 +22,6 @@ const ProfilePage = () => {
     if (!file) return;
 
     const reader = new FileReader();
-
     reader.readAsDataURL(file);
 
     reader.onload = async () => {
@@ -34,7 +33,6 @@ const ProfilePage = () => {
 
   const handleSave = () => {
     if (newFullName !== authUser?.fullName || newEmail !== authUser?.email) {
-      console.log("Updated Profile Data: ", { fullName: newFullName, email: newEmail }); 
       updateProfile({ fullName: newFullName, email: newEmail });
     }
     setEditingFullName(false);
@@ -42,18 +40,16 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className={`flex font-open-sans border-r border-base-300 h-screen ${theme === "dark" ? "" : "bg-gray-100"}`}>
+    <div className="flex font-open-sans border-r border-gray-300 h-screen bg-gray-100">
       <SideBar active="Profile" />
 
-      <div className="flex-1 max-w-sm border-r border-base-300">
-        <div
-          className={`shadow px-4 py-8 space-y-5 ${theme === "dark" ? " text-white" : "bg-opacity-60 bg-white"} h-full`}
-        >
+      <div className="flex-1 max-w-sm border-r border-gray-300">
+        <div className="shadow px-4 py-8 space-y-5 bg-white bg-opacity-60 h-full">
           <div className="text-start space-y-1">
-            <p className={`text-xl font-semibold ${theme === "dark" ? "text-white" : "text-gray-800"}`}>Profile</p>
+            <p className="text-xl font-semibold text-gray-800">Profile</p>
           </div>
 
-          {/* Avatar Upload Section */}
+          {/* Avatar Upload */}
           <div className="flex flex-col items-center gap-2">
             <div className="relative">
               <img
@@ -79,16 +75,16 @@ const ProfilePage = () => {
                 />
               </label>
             </div>
-            <p className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
+            <p className="text-xs text-gray-500">
               {isUpdatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
             </p>
           </div>
 
-          {/* Profile Details */}
+          {/* Profile Fields */}
           <div className="flex justify-center items-center">
             <div className="grid grid-cols-1 gap-1 w-80">
               {/* Full Name */}
-              <div className="p-4 rounded-lg shadow-sm space-y-1.5 flex items-center justify-between">
+              <div className="p-4 rounded-lg shadow-sm flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4" />
                   <span className="text-xs">FullName</span>
@@ -114,7 +110,7 @@ const ProfilePage = () => {
               </div>
 
               {/* Email */}
-              <div className="p-4 rounded-lg shadow-sm space-y-1.5 flex items-center justify-between">
+              <div className="p-4 rounded-lg shadow-sm flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />
                   <span className="text-xs">Email</span>
@@ -154,18 +150,16 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {/* Account Information Section */}
+          {/* Account Info */}
           <div className="mt-6 p-2 rounded-xl shadow-sm">
-            <h2 className={`text-xl font-medium ${theme === "dark" ? "text-white" : "text-gray-800"} mb-4`}>
-              Account Information
-            </h2>
+            <h2 className="text-xl font-medium text-gray-800 mb-4">Account Information</h2>
             <div className="space-y-3 text-sm">
               <div className="flex items-center justify-between py-2 border-b border-gray-300">
-                <span className="">Member Since</span>
-                <span className="">{authUser.createdAt?.split("T")[0]}</span>
+                <span>Member Since</span>
+                <span>{authUser.createdAt?.split("T")[0]}</span>
               </div>
               <div className="flex items-center justify-between py-2">
-                <span className="">Account Status</span>
+                <span>Account Status</span>
                 <span className="text-green-600 font-semibold">Active</span>
               </div>
             </div>
@@ -173,8 +167,9 @@ const ProfilePage = () => {
         </div>
       </div>
 
+      {/* Right Section - Chat */}
       <div className="flex-[3]">
-        <div className="bg-base-100 shadow-cl w-100 h-[calc(120vh-8rem)]">
+        <div className="bg-white shadow w-full h-[calc(120vh-8rem)]">
           <div className="flex h-full overflow-hidden">
             {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
           </div>

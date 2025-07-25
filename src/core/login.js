@@ -1,0 +1,127 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Button from "../components/button.js";
+import Header from "../components/header.js";
+import { useAuthStore } from "../store/useAuthStore.js";
+
+const Login = () => {
+  const navigate = useNavigate();
+  const { login, isLoggingIn } = useAuthStore();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError({});
+
+    if (!email || !password) {
+      setError({
+        email: !email ? "Email is required" : "",
+        password: !password ? "Password is required" : "",
+      });
+      return;
+    }
+
+    try {
+      const response = await login({ email, password });
+      if (response?.token) {
+        toast.success("Login successful!");
+        navigate("/chat");
+      } else {
+        toast.error("Invalid credentials. Please try again.");
+      }
+    } catch (err) {
+      toast.error(err.message || "Login failed. Please try again.");
+    }
+  };
+
+  return (
+    <>
+      <Header />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 font-open-sans px-4">
+        <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md border border-blue-200">
+          <h2 className="text-3xl font-bold text-blue-800 text-center mb-6">Welcome Back</h2>
+
+          <form onSubmit={handleLogin}>
+            {/* Email */}
+            <div className="mb-5">
+              <label htmlFor="email" className="block text-sm font-medium text-blue-700 mb-1">
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                className={`w-full px-4 py-2 border ${
+                  error.email ? "border-red-500" : "border-blue-300"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              {error.email && <p className="text-red-500 text-sm mt-1">{error.email}</p>}
+            </div>
+
+            {/* Password */}
+            <div className="mb-5 relative">
+              <label htmlFor="password" className="block text-sm font-medium text-blue-700 mb-1">
+                Password
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                className={`w-full px-4 py-2 border ${
+                  error.password ? "border-red-500" : "border-blue-300"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10`}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-9 text-blue-500 text-sm"
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
+              {error.password && <p className="text-red-500 text-sm mt-1">{error.password}</p>}
+            </div>
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-semibold shadow"
+              disabled={isLoggingIn}
+            >
+              {isLoggingIn ? "Signing In..." : "Sign In"}
+            </Button>
+          </form>
+
+          {/* Forgot Password */}
+          <div className="text-center mt-4">
+            <button
+              onClick={() => navigate("/forgot-password")}
+              className="text-blue-600 hover:underline text-sm"
+            >
+              Forgot your password?
+            </button>
+          </div>
+
+          {/* Sign Up */}
+          <p className="mt-6 text-sm text-gray-700 text-center">
+            Don’t have an account?{" "}
+            <button
+              onClick={() => navigate("/register")}
+              className="text-blue-700 font-semibold hover:underline"
+            >
+              Register here
+            </button>
+          </p>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Login;

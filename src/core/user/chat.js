@@ -18,7 +18,7 @@ const Chat = () => {
         <MessagingSideBar />
 
         {/* Main Chat Section */}
-        <div className="bg-base-100 rounded-lg shadow w-full h-[calc(100vh-4rem)]">
+        <div className="bg-white rounded-lg shadow w-full h-[calc(100vh-4rem)]">
           <div className="flex h-full rounded-lg overflow-hidden">
             {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
           </div>

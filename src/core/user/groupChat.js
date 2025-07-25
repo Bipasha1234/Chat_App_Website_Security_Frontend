@@ -18,7 +18,7 @@ const GroupChat = () => {
         <GroupMessagingSideBar />
 
         {/* Main Chat Window */}
-        <div className="bg-base-100 rounded-lg shadow-cl w-full h-[calc(100vh-4rem)]">
+        <div className="bg-white rounded-lg shadow-cl w-full h-[calc(100vh-4rem)]">
           <div className="flex h-full rounded-lg overflow-hidden">
             {/* Chat Content */}
             {!selectedGroup ? <NoChatSelected /> : <GroupChatContainer />} 

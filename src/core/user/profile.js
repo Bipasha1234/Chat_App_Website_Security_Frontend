@@ -40,15 +40,13 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Top Navigation */}
-      <HeaderNav />
-
-      {/* Page Content */}
-      <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+    <div className="bg-gray-100 min-h-screen flex flex-col">
+        <HeaderNav />
+      {/* Main Content */}
+      <div className="flex flex-1 ">
         {/* Left Panel - Profile */}
-        <div className="w-96 p-4 bg-white border-r overflow-y-auto">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Profile</h2>
+        <div className="w-full md:w-96 p-6 bg-white border-r overflow-y-auto ">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Profile</h2>
 
           {/* Avatar Upload */}
           <div className="flex flex-col items-center gap-2 mb-6">
@@ -56,13 +54,13 @@ const ProfilePage = () => {
               <img
                 src={selectedImg || authUser?.profilePic || userPlaceholder}
                 alt="Profile"
-                className="w-32 h-32 rounded-full object-cover border-4 border-black"
+                className="w-32 h-32 rounded-full object-cover border-4 "
               />
               <label
                 htmlFor="avatar-upload"
-                className={`absolute bottom-0 right-0 bg-[#69aa92] hover:bg-[#82c6ad] text-white p-2 rounded-full cursor-pointer ${
-                  isUpdatingProfile ? "animate-pulse pointer-events-none" : ""
-                }`}
+                className={`absolute bottom-0 right-0 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full cursor-pointer transition ${{
+                  'animate-pulse pointer-events-none': isUpdatingProfile
+                }}`}
               >
                 <Camera className="w-5 h-5" />
                 <input
@@ -76,25 +74,24 @@ const ProfilePage = () => {
               </label>
             </div>
             <p className="text-xs text-gray-500">
-              {isUpdatingProfile ? "Uploading..." : "Click camera icon to change photo"}
+              {isUpdatingProfile ? "Uploading..." : "Click the camera icon to change photo"}
             </p>
           </div>
 
           {/* Full Name */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2 text-sm">
-              <User size={16} />
-              <span>Full Name</span>
-            </div>
-            <div className="flex items-center gap-2">
+          <div className="mb-4">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <User size={16} /> Full Name
+            </label>
+            <div className="flex items-center gap-2 mt-1">
               {editingFullName ? (
                 <input
                   value={newFullName}
                   onChange={(e) => setNewFullName(e.target.value)}
-                  className="border rounded px-2 text-sm"
+                  className="flex-1 border px-3 py-1 rounded text-sm"
                 />
               ) : (
-                <p className="text-sm px-2">{authUser?.fullName}</p>
+                <p className="text-sm text-gray-800 flex-1">{authUser?.fullName}</p>
               )}
               <button onClick={() => setEditingFullName((prev) => !prev)}>
                 <Pencil size={16} />
@@ -103,20 +100,19 @@ const ProfilePage = () => {
           </div>
 
           {/* Email */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2 text-sm">
-              <Mail size={16} />
-              <span>Email</span>
-            </div>
-            <div className="flex items-center gap-2">
+          <div className="mb-4">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <Mail size={16} /> Email
+            </label>
+            <div className="flex items-center gap-2 mt-1">
               {editingEmail ? (
                 <input
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  className="border rounded px-2 text-sm"
+                  className="flex-1 border px-3 py-1 rounded text-sm"
                 />
               ) : (
-                <p className="text-sm px-2">{authUser?.email}</p>
+                <p className="text-sm text-gray-800 flex-1">{authUser?.email}</p>
               )}
               <button onClick={() => setEditingEmail((prev) => !prev)}>
                 <Pencil size={16} />
@@ -128,16 +124,16 @@ const ProfilePage = () => {
           {(editingFullName || editingEmail) && (
             <button
               onClick={handleSave}
-              className="mt-4 w-full bg-emerald-700 text-white py-2 rounded"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition mt-4"
               disabled={isUpdatingProfile}
             >
-              Save
+              Save Changes
             </button>
           )}
 
           {/* Account Info */}
-          <div className="mt-6 border-t pt-4">
-            <h3 className="text-md font-medium text-gray-700 mb-2">Account Information</h3>
+          <div className="mt-6 pt-4 border-t">
+            <h3 className="text-md font-semibold text-gray-700 mb-2">Account Info</h3>
             <div className="text-sm space-y-2">
               <div className="flex justify-between">
                 <span>Member Since:</span>
@@ -151,10 +147,12 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Right Panel - Chat Preview */}
-        <div className="flex-1 bg-white shadow-inner overflow-hidden">
-          {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
+     <div className="bg-white rounded-lg shadow w-full h-[calc(100vh-4rem)]">
+          <div className="flex h-full rounded-lg overflow-hidden">
+            {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
+          </div>
         </div>
+
       </div>
     </div>
   );

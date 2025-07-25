@@ -2,7 +2,7 @@ import { ChevronRight, UserX, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChatContainer from "../../components/ChatContainer";
-import HeaderNav from "../../components/HeaderNav"; // Your header nav
+import HeaderNav from "../../components/HeaderNav";
 import NoChatSelected from "../../components/NoChatSelected";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useChatStore } from "../../store/useChatStore";
@@ -60,7 +60,7 @@ const Settings = () => {
               <div className="mt-6 flex items-center justify-center">
                 <button
                   onClick={handleLogout}
-                  className="bg-red-600 w-28 py-1 px-3 text-white flex items-center justify-center font-medium rounded-md shadow-md hover:bg-red-700"
+                  className="bg-red-600 w-28 py-2 px-4 text-white flex items-center justify-center font-medium rounded-md shadow-md hover:bg-red-700"
                 >
                   Logout
                 </button>
@@ -105,7 +105,7 @@ const Settings = () => {
         </div>
 
         {/* Right Panel (Chat Area) */}
-        <div className="flex-[3] bg-white">
+        <div className="flex-[2] bg-white">
           <div className="w-full h-full shadow-md">
             <div className="flex h-full overflow-hidden">
               {!selectedUser ? <NoChatSelected /> : <ChatContainer />}

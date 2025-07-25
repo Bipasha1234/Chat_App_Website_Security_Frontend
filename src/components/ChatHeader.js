@@ -67,7 +67,7 @@ const ChatHeader = ({ onSearch }) => {
     <div className="relative">
 
       {/* 🔹 Chat Header */}
-      <div className="p-2.5 border-b border-base-300 flex items-center justify-between bg-base-100 dark:bg-base-800">
+      <div className="p-2.5 border-b border-base-300 flex items-center justify-between bg-white dark:bg-base-800">
         <div className="flex items-center gap-3">
           {/* Profile Picture */}
           <div className="flex justify-center items-center">
@@ -124,7 +124,7 @@ const ChatHeader = ({ onSearch }) => {
 
             {/* 🔹 Options Menu */}
             {menuOpen && (
-              <div className="absolute right-0 mt-2 w-48 shadow-lg rounded-lg border border-gray-700 dark:border-base-600 z-50 bg-white dark:bg-base-800">
+              <div className="absolute right-0 mt-2 w-48 shadow-lg rounded-lg border-gray-700  z-50 bg-white ">
                
 
                 <button

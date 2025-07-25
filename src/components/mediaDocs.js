@@ -26,7 +26,7 @@ const MediaDocs = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState("gallery");
 
   return (
-    <div className="absolute top-0 left-0 w-full h-screen bg-base-100 shadow-lg p-6 z-50 overflow-y-auto animate-slideIn">
+    <div className="absolute top-0 left-0 w-full h-screen bg-white shadow-lg p-6 z-50 overflow-y-auto animate-slideIn">
       <div className="flex items-center justify-between border-b pb-4">
         <button onClick={onClose} className=" ">
           <X size={28} />
@@ -38,7 +38,7 @@ const MediaDocs = ({ onClose }) => {
       <div className="flex justify-around mt-4 border-b pb-2">
         <button
           className={`w-1/2 pb-2 text-center text-lg font-medium transition ${
-            activeTab === "gallery" ? "border-b-4 border-emerald-600 text-emerald-600" : "text-gray-500"
+            activeTab === "gallery" ? "border-b-4 border-blue-600 text-blue-600" : "text-gray-500"
           }`}
           onClick={() => setActiveTab("gallery")}
         >

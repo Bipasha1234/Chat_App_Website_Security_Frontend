@@ -131,7 +131,7 @@ const GroupContactInfo = ({ onClose }) => {
             />
             <label
               htmlFor="profilePic"
-              className="absolute bottom-0 right-0 bg-[#589881] hover:bg-[#4aa785] text-white p-2 rounded-full cursor-pointer"
+              className="absolute bottom-0 right-0 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full cursor-pointer"
             >
               <Camera size={20} className="" />
             </label>
@@ -168,7 +168,7 @@ const GroupContactInfo = ({ onClose }) => {
                 />
                 <button
                   onClick={handleNameChange}
-                  className="px-3 py-2 bg-[#93b6a8] text-white rounded-lg hover:bg-[#408e72]"
+                  className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                 >
                   ✔
                 </button>

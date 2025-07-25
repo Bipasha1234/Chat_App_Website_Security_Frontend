@@ -72,7 +72,7 @@ const ChatContainer = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto bg-blue-50">
+    <div className="flex-1 flex flex-col overflow-auto ">
       <ChatHeader onSearch={setSearchQuery} />
 
       {/* Chat Messages Section */}

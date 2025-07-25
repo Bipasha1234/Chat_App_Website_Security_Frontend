@@ -99,7 +99,7 @@ const GroupChatHeader = ({ onSearch }) => {
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 mt-2 w-48 shadow-lg rounded-lg border border-gray-200 dark:border-base-600 z-50 bg-base-100 dark:bg-base-800">
+              <div className="absolute right-0 mt-2 w-48 shadow-lg rounded-lg border border-gray-200  z-50 bg-white ">
                 <button
                   className="flex items-center gap-2 w-full px-4 py-2  dark:hover:bg-base-700"
                   onClick={() => {

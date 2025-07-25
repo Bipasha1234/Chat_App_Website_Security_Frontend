@@ -13,9 +13,11 @@ function Header() {
     <header className="bg-white shadow sticky top-0 z-50  font-open-sans">
       <div className="container mx-auto flex justify-between items-center px-4 py-2 md:py-3">
         {/* Logo */}
-        <div className="flex items-center cursor-pointer" onClick={handleHome}>
-          <img src={logo} alt="Chattix Logo" className="h-12 w-auto" />
-        </div>
+    <div className="flex items-center cursor-pointer" onClick={handleHome}>
+  <span className="text-blue-600 font-semibold mr-2">MessageI</span>
+  <img src={logo} alt="Chattix Logo" className="h-12 w-auto" />
+</div>
+
 
         {/* Login Button */}
         <button

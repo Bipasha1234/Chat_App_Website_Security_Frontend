@@ -1,11 +1,11 @@
 import { Download, File } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useChatStore } from "../../src/core/public/store/useChatStore";
 import userPlaceholder from "../assets/images/group.png";
 import GroupChatHeader from "../components/groupChatHeader";
 import GroupMessageInput from "../components/groupMessageInput";
 import { useAuthStore } from "../core/public/store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
+import { useChatStore } from "../store/useChatStore";
 const GroupChatContainer = () => {
   const {
     messages,

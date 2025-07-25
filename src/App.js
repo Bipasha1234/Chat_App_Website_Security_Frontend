@@ -4,6 +4,7 @@ import Home from "./core/home.js";
 import Login from "./core/login.js";
 import Register from "./core/register.js";
 import Chat from "./core/user/chat.js";
+import GroupChat from "./core/user/groupChat.js";
 import { useAuthStore } from "./store/useAuthStore.js";
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path="/register" element={!authUser ? <Register /> : <Navigate to="/chat" />} />
         <Route path="/login-customer" element={!authUser ? <Login /> : <Navigate to="/chat" />} />
             <Route path="/chat" element={authUser ? <Chat /> : <Navigate to="/login-customer" />} />
+             <Route path="/group/chat" element={authUser ? <GroupChat/> : <Navigate to="/login-customer" />} />
       </Routes>
       
     </Router>

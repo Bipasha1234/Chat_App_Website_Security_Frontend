@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCog, FaComments, FaUserCircle, FaUsers } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useThemeStore } from "../core/public/store/useThemeStore"; // Import your theme store
 
 const SideBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { theme, setTheme } = useThemeStore(); // Use theme state from zustand store
 
   const sidebarItems = [
     { id: "Chat", icon: <FaComments size={25} />, label: "Chat", route: "/chat" },

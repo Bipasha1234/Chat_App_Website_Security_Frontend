@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { FiArrowLeft, FiCheckSquare, FiMoreHorizontal, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
 import { IoMdChatbubbles } from "react-icons/io";
 import { MdGroupAdd } from "react-icons/md";
-import { useAuthStore } from "../../src/core/public/store/useAuthStore";
-import { useChatStore } from "../../src/core/public/store/useChatStore";
+
 import userPlaceholder from "../assets/images/user.png";
 import CreateGroupModal from "../components/createGroupModel";
+import { useAuthStore } from "../store/useAuthStore";
+import { useChatStore } from "../store/useChatStore";
 // import SidebarSkeleton from "../components/skeletons/SidebarSkeleton";
 
 const MessagingSidebar = () => {

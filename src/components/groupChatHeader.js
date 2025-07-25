@@ -33,7 +33,7 @@ const GroupChatHeader = ({ onSearch }) => {
     try {
       await leaveGroup(selectedGroup._id); // Assuming `leaveGroup` method is available in the store
       toast.success(`You left the group: ${selectedGroup.name}.`);
-      setSelectedGroup(null); // ✅ Close chat window
+      setSelectedGroup(null); 
     } catch (error) {
       toast.error("Failed to leave the group. Please try again.");
     }

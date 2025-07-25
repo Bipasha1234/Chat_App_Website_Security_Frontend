@@ -72,7 +72,7 @@ const GroupChatContainer = () => {
     if (!query) return text;
     return text.split(new RegExp(`(${query})`, "gi")).map((part, index) =>
       part.toLowerCase() === query.toLowerCase() ? (
-        <mark key={index} className="bg-yellow-200">{part}</mark>
+        <mark key={index} className="bg-blue-700">{part}</mark>
       ) : (
         part
       )

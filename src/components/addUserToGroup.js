@@ -48,8 +48,8 @@ const AddUserToGroup = ({ onClose, selectedGroup }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-base-100 bg-opacity-40 z-50">
-      <div className="bg-base-100 rounded-xl shadow-lg w-full max-w-lg p-6 relative">
+    <div className="fixed inset-0 flex justify-center items-center bg-white bg-opacity-40 z-50">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-2 left-2  focus:outline-none"
@@ -64,7 +64,7 @@ const AddUserToGroup = ({ onClose, selectedGroup }) => {
             placeholder="Search users..."
             value={searchUser}
             onChange={(e) => setSearchUser(e.target.value)}
-            className="px-4 py-3 border border-gray-300 rounded-xl w-full focus:outline-none focus:ring-1 focus:ring-emerald-400 text-lg"
+            className="px-4 py-3 border border-gray-300 rounded-xl w-full focus:outline-none focus:ring-1 focus:ring-blue-400 text-lg"
           />
         </div>
 
@@ -77,9 +77,9 @@ const AddUserToGroup = ({ onClose, selectedGroup }) => {
                 disabled={alreadyAddedUsers.has(user._id)} 
                 className={`${
                   selectedUsers.has(user._id)
-                    ? 'bg-[#81b9a4] text-white'
+                    ? 'bg-blue-400 text-white'
                     : 'bg-gray-300 text-gray-700'
-                } text-sm py-1 px-4 rounded-full hover:bg-[#75b8a0] focus:outline-none transition duration-200`}
+                } text-sm py-1 px-4 rounded-full hover:bg-blue-400 focus:outline-none transition duration-200`}
               >
                 {alreadyAddedUsers.has(user._id) ? 'Already Added' : selectedUsers.has(user._id) ? 'Selected' : 'Select'}
               </button>
@@ -92,7 +92,7 @@ const AddUserToGroup = ({ onClose, selectedGroup }) => {
             onClick={handleAddUsers}
             disabled={selectedUsers.size === 0}
             className={`${
-              selectedUsers.size === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#81b9a4] hover:bg-[#65ab91]'
+              selectedUsers.size === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
             } text-white text-lg w-full py-3 rounded-xl focus:outline-none transition duration-200`}
           >
             Add {selectedUsers.size} Member(s)

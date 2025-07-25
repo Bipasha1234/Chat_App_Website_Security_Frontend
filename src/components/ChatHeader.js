@@ -3,10 +3,11 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { MdBlock } from "react-icons/md";
 import userPlaceholder from "../../src/assets/images/user.png";
-import { useAuthStore } from "../../src/core/public/store/useAuthStore";
-import { useChatStore } from "../../src/core/public/store/useChatStore";
+
 import ConfirmationModal from "../components/confirmationModel";
 import ContactInfo from "../components/contactInfo";
+import { useAuthStore } from "../store/useAuthStore";
+import { useChatStore } from "../store/useChatStore";
 
 const ChatHeader = ({ onSearch }) => {
   const { selectedUser, setSelectedUser, deleteChat, blockUser, getBlockedUsers, getUsers } = useChatStore();

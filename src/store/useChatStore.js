@@ -240,10 +240,10 @@ export const useChatStore = create((set, get) => ({
 
         if (res.data?.group) {
             set((state) => ({
-                groups: [...state.groups, res.data.group], // ✅ Add new group to state
+                groups: [...state.groups, res.data.group], 
             }));
             toast.success("Group created successfully");
-            console.log("✅ Group Created:", res.data.group);
+            console.log("Group Created:", res.data.group);
         } else {
             throw new Error("Group creation failed");
         }

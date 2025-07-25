@@ -37,8 +37,8 @@ const CreateGroupModal = ({ onClose, selectedChats }) => {
   
 
   return (
-    <div className="fixed inset-0  bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-base-300 p-6 rounded-lg shadow-lg w-96">
+    <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg border w-96">
         <h2 className="text-xl font-semibold mb-3">Create New Group</h2>
 
         <input
@@ -54,7 +54,7 @@ const CreateGroupModal = ({ onClose, selectedChats }) => {
             Cancel
           </button>
           <button
-            className="px-4 py-2 bg-green-500 text-white rounded-lg"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg"
             
             onClick={() => {
                 console.log("🚀 Create Button Clicked - Selected Users:", selectedChats);

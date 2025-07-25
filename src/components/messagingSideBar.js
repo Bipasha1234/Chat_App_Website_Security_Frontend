@@ -1,6 +1,6 @@
 import debounce from "lodash/debounce";
 import { useEffect, useState } from "react";
-import { FiArrowLeft, FiCheckSquare, FiMoreHorizontal, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
+import { FiArrowLeft, FiMoreHorizontal, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
 import { IoMdChatbubbles } from "react-icons/io";
 import { MdGroupAdd } from "react-icons/md";
 
@@ -206,12 +206,7 @@ const MessagingSidebar = () => {
             >
               <FiTrash2 /> Delete Chats
             </button>
-            <button
-              className="w-full text-left flex items-center gap-2 p-2 rounded hover:bg-blue-50"
-              onClick={handleMarkAsUnread}
-            >
-              <FiCheckSquare /> Mark as Unread
-            </button>
+            
             <button
               className="w-full text-left flex items-center gap-2 p-2 rounded hover:bg-blue-50"
               onClick={() => setIsCreatingGroup(true)}

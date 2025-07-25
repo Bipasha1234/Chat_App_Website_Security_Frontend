@@ -30,23 +30,15 @@ const SideBar = () => {
 
   return (
     <div className="flex">
-      <div className={`w-20 flex flex-col items-center py-6 space-y-8 ${theme === "dark" ? "" : "bg-gray-100"}`}>
+      <div className="w-20 flex flex-col items-center py-6 space-y-8 bg-gray-100">
         {sidebarItems.map((item) => (
           <div
             key={item.id}
             onClick={() => handleTabClick(item)}
             className={`p-3 rounded-lg cursor-pointer transition-all duration-200
               ${activeTab === item.id 
-                ? theme === "light" 
-                  ? "bg-[#6cbfa3] text-white border-l-4 border-green-700 shadow-md" 
-                  : theme === "dark"
-                  ? "bg-black text-white border-l-4 border-gray-600 shadow-md"
-                  : "bg-emerald-500 text-white border-l-4 border-emerald-700 shadow-md"
-                : theme === "light" 
-                  ? "hover:bg-[#c8e3da] text-base-content" 
-                  : theme === "dark"
-                  ? "hover:bg-gray-700 text-base-content"
-                  : "hover:bg-emerald-100 text-base-content"
+                ? "bg-[#6cbfa3] text-white border-l-4 border-green-700 shadow-md" 
+                : "hover:bg-[#c8e3da] text-gray-800"
               }`}
             title={item.label}
           >

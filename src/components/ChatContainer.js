@@ -1,5 +1,8 @@
 
+import { Download, File } from "lucide-react";
+
 import { useEffect, useRef, useState } from "react";
+
 
 import userPlaceholder from "../assets/images/user.png";
 import { formatMessageTime } from "../lib/utils";
@@ -90,7 +93,7 @@ const ChatContainer = () => {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
       {messages.map((message, index) => (
   <div 
-    key={message._id || `message-${index}`} // ✅ Ensure a unique key is always present
+    key={message._id || `message-${index}`}
     className={`flex ${message.senderId === authUser._id ? "justify-end" : "justify-start"}`}
   >
 

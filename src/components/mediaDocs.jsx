@@ -1,16 +1,17 @@
 import { format, isToday, isYesterday } from "date-fns";
 import { Download, File, X } from "lucide-react";
 import { useState } from "react";
-import { useChatStore } from "../../src/core/public/store/useChatStore";
+import { useChatStore } from "../store/useChatStore";
+
 
 const formatTimestamp = (date) => {
   const messageDate = new Date(date);
   if (isToday(messageDate)) {
-    return format(messageDate, "h:mm a"); // Shows time if today (e.g., 10:30 AM)
+    return format(messageDate, "h:mm a"); 
   } else if (isYesterday(messageDate)) {
     return "Yesterday";
   } else {
-    return format(messageDate, "dd/MM/yyyy"); // Shows date (e.g., 05/02/2024)
+    return format(messageDate, "dd/MM/yyyy"); 
   }
 };
 

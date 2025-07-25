@@ -1,11 +1,11 @@
-import { Contact, MoreVertical, Search, Trash2, X } from "lucide-react";
+import { MoreVertical, Search, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { MdBlock } from "react-icons/md";
 import userPlaceholder from "../../src/assets/images/user.png";
 
 import ConfirmationModal from "../components/confirmationModel";
-import ContactInfo from "../components/contactInfo";
+
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 
@@ -43,7 +43,7 @@ const ChatHeader = ({ onSearch }) => {
       toast.success(`${selectedUser.fullName} has been blocked.`);
       await getBlockedUsers();
       await getUsers(); // Refresh users list
-      setSelectedUser(null); // ✅ Close chat
+      setSelectedUser(null); 
     } catch (error) {
       toast.error("Failed to block user. Please try again.");
     }
@@ -56,7 +56,7 @@ const ChatHeader = ({ onSearch }) => {
     try {
       await deleteChat(selectedUser._id);
       toast.success(`Chat with ${selectedUser.fullName} deleted.`);
-      setSelectedUser(null); // ✅ Close chat window
+      setSelectedUser(null); 
     } catch (error) {
       toast.error("Failed to delete chat. Please try again.");
     }
@@ -65,8 +65,6 @@ const ChatHeader = ({ onSearch }) => {
 
   return (
     <div className="relative">
-      {/* 🔹 Contact Info Popup */}
-      {showContactInfo && <ContactInfo onClose={() => setShowContactInfo(false)} />}
 
       {/* 🔹 Chat Header */}
       <div className="p-2.5 border-b border-base-300 flex items-center justify-between bg-base-100 dark:bg-base-800">
@@ -126,16 +124,8 @@ const ChatHeader = ({ onSearch }) => {
 
             {/* 🔹 Options Menu */}
             {menuOpen && (
-              <div className="absolute right-0 mt-2 w-48 shadow-lg rounded-lg border border-gray-200 dark:border-base-600 z-50 bg-base-100 dark:bg-base-800">
-                <button
-                  className="flex items-center gap-2 w-full px-4 py-2 "
-                  onClick={() => {
-                    setShowContactInfo(true);
-                    setMenuOpen(false);
-                  }}
-                >
-                  <Contact size={18} /> Contact Info
-                </button>
+              <div className="absolute right-0 mt-2 w-48 shadow-lg rounded-lg border border-gray-700 dark:border-base-600 z-50 bg-white dark:bg-base-800">
+               
 
                 <button
                   className="flex items-center gap-2 w-full px-4 py-2  text-red-600"

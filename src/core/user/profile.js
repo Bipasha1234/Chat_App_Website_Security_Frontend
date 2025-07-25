@@ -2,8 +2,8 @@ import { Camera, Mail, Pencil, User } from "lucide-react";
 import { useState } from "react";
 import userPlaceholder from "../../assets/images/user.png";
 import ChatContainer from "../../components/ChatContainer";
+import HeaderNav from "../../components/HeaderNav";
 import NoChatSelected from "../../components/NoChatSelected";
-import SideBar from "../../components/SideBar";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useChatStore } from "../../store/useChatStore";
 
@@ -40,27 +40,27 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="flex font-open-sans border-r border-gray-300 h-screen bg-gray-100">
-      <SideBar active="Profile" />
+    <div className="bg-gray-100 min-h-screen">
+      {/* Top Navigation */}
+      <HeaderNav />
 
-      <div className="flex-1 max-w-sm border-r border-gray-300">
-        <div className="shadow px-4 py-8 space-y-5 bg-white bg-opacity-60 h-full">
-          <div className="text-start space-y-1">
-            <p className="text-xl font-semibold text-gray-800">Profile</p>
-          </div>
+      {/* Page Content */}
+      <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+        {/* Left Panel - Profile */}
+        <div className="w-96 p-4 bg-white border-r overflow-y-auto">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Profile</h2>
 
           {/* Avatar Upload */}
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-2 mb-6">
             <div className="relative">
               <img
                 src={selectedImg || authUser?.profilePic || userPlaceholder}
                 alt="Profile"
-                className="w-34 h-32 rounded-full object-cover border-4 border-black"
+                className="w-32 h-32 rounded-full object-cover border-4 border-black"
               />
-
               <label
                 htmlFor="avatar-upload"
-                className={`absolute bottom-0 right-0 bg-[#69aa92] hover:bg-[#82c6ad] text-white p-2 rounded-full cursor-pointer transition-transform duration-200 ${
+                className={`absolute bottom-0 right-0 bg-[#69aa92] hover:bg-[#82c6ad] text-white p-2 rounded-full cursor-pointer ${
                   isUpdatingProfile ? "animate-pulse pointer-events-none" : ""
                 }`}
               >
@@ -76,103 +76,84 @@ const ProfilePage = () => {
               </label>
             </div>
             <p className="text-xs text-gray-500">
-              {isUpdatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
+              {isUpdatingProfile ? "Uploading..." : "Click camera icon to change photo"}
             </p>
           </div>
 
-          {/* Profile Fields */}
-          <div className="flex justify-center items-center">
-            <div className="grid grid-cols-1 gap-1 w-80">
-              {/* Full Name */}
-              <div className="p-4 rounded-lg shadow-sm flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  <span className="text-xs">FullName</span>
-                </div>
-                <div className="flex items-center gap-2 mr-4">
-                  {editingFullName ? (
-                    <input
-                      type="text"
-                      value={newFullName}
-                      onChange={(e) => setNewFullName(e.target.value)}
-                      className="px-2 text-xs py-2.5 rounded-lg border"
-                    />
-                  ) : (
-                    <p className="px-8 text-xs py-2.5 rounded-lg border">{authUser?.fullName}</p>
-                  )}
-                  <button
-                    onClick={() => setEditingFullName((prev) => !prev)}
-                    className="text-gray-600 hover:text-gray-800"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+          {/* Full Name */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2 text-sm">
+              <User size={16} />
+              <span>Full Name</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {editingFullName ? (
+                <input
+                  value={newFullName}
+                  onChange={(e) => setNewFullName(e.target.value)}
+                  className="border rounded px-2 text-sm"
+                />
+              ) : (
+                <p className="text-sm px-2">{authUser?.fullName}</p>
+              )}
+              <button onClick={() => setEditingFullName((prev) => !prev)}>
+                <Pencil size={16} />
+              </button>
+            </div>
+          </div>
 
-              {/* Email */}
-              <div className="p-4 rounded-lg shadow-sm flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
-                  <span className="text-xs">Email</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  {editingEmail ? (
-                    <input
-                      type="email"
-                      value={newEmail}
-                      onChange={(e) => setNewEmail(e.target.value)}
-                      className="text-xs px-5 py-2.5 rounded-lg border"
-                    />
-                  ) : (
-                    <p className="text-xs px-5 py-2.5 rounded-lg border">{authUser?.email}</p>
-                  )}
-                  <button
-                    onClick={() => setEditingEmail((prev) => !prev)}
-                    className="text-gray-600 hover:text-gray-800"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+          {/* Email */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2 text-sm">
+              <Mail size={16} />
+              <span>Email</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {editingEmail ? (
+                <input
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  className="border rounded px-2 text-sm"
+                />
+              ) : (
+                <p className="text-sm px-2">{authUser?.email}</p>
+              )}
+              <button onClick={() => setEditingEmail((prev) => !prev)}>
+                <Pencil size={16} />
+              </button>
             </div>
           </div>
 
           {/* Save Button */}
           {(editingFullName || editingEmail) && (
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={handleSave}
-                className="px-4 py-2 bg-emerald-700 text-white rounded-lg"
-                disabled={isUpdatingProfile}
-              >
-                Save
-              </button>
-            </div>
+            <button
+              onClick={handleSave}
+              className="mt-4 w-full bg-emerald-700 text-white py-2 rounded"
+              disabled={isUpdatingProfile}
+            >
+              Save
+            </button>
           )}
 
           {/* Account Info */}
-          <div className="mt-6 p-2 rounded-xl shadow-sm">
-            <h2 className="text-xl font-medium text-gray-800 mb-4">Account Information</h2>
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center justify-between py-2 border-b border-gray-300">
-                <span>Member Since</span>
+          <div className="mt-6 border-t pt-4">
+            <h3 className="text-md font-medium text-gray-700 mb-2">Account Information</h3>
+            <div className="text-sm space-y-2">
+              <div className="flex justify-between">
+                <span>Member Since:</span>
                 <span>{authUser.createdAt?.split("T")[0]}</span>
               </div>
-              <div className="flex items-center justify-between py-2">
-                <span>Account Status</span>
+              <div className="flex justify-between">
+                <span>Status:</span>
                 <span className="text-green-600 font-semibold">Active</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Right Section - Chat */}
-      <div className="flex-[3]">
-        <div className="bg-white shadow w-full h-[calc(120vh-8rem)]">
-          <div className="flex h-full overflow-hidden">
-            {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
-          </div>
+        {/* Right Panel - Chat Preview */}
+        <div className="flex-1 bg-white shadow-inner overflow-hidden">
+          {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
         </div>
       </div>
     </div>

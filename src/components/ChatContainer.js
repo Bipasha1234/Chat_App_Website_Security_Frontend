@@ -1,8 +1,5 @@
-
 import { Download, File } from "lucide-react";
-
 import { useEffect, useRef, useState } from "react";
-
 
 import userPlaceholder from "../assets/images/user.png";
 import { formatMessageTime } from "../lib/utils";
@@ -24,20 +21,18 @@ const ChatContainer = () => {
 
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
-  const messageRefs = useRef({});
   const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     if (selectedUser?._id && authUser) {
-      console.log("Fetching messages for user:", selectedUser._id);
       getMessages(selectedUser._id);
       subscribeToMessages();
     }
-  
+
     return () => {
       unsubscribeFromMessages();
     };
   }, [selectedUser?._id, authUser, getMessages, subscribeToMessages, unsubscribeFromMessages]);
-  
 
   useEffect(() => {
     if (messageEndRef.current && messages) {
@@ -45,31 +40,22 @@ const ChatContainer = () => {
     }
   }, [messages]);
 
-  useEffect(() => {
-    if (searchQuery) {
-      scrollToMessage();
-    }
-  }, [searchQuery]);
-
-  const scrollToMessage = () => {
-    const matchedMessage = messages.find((msg) =>
-      msg.text?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    if (matchedMessage && messageRefs.current[matchedMessage._id]) {
-      messageRefs.current[matchedMessage._id].scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  };
-
   const highlightMatch = (text, query) => {
     if (!query) return text;
     return text.split(new RegExp(`(${query})`, "gi")).map((part, index) =>
-      part.toLowerCase() === query.toLowerCase() ? <mark key={index} className="bg-blue-300">{part}</mark> : part
+      part.toLowerCase() === query.toLowerCase() ? (
+        <mark key={index} className="bg-blue-300 rounded">
+          {part}
+        </mark>
+      ) : (
+        part
+      )
     );
   };
 
   if (isMessagesLoading) {
     return (
-      <div className="flex-1 flex flex-col overflow-auto">
+      <div className="flex-1 flex flex-col overflow-auto bg-blue-50">
         <ChatHeader onSearch={setSearchQuery} />
         <MessageSkeleton />
         <MessageInput />
@@ -79,97 +65,132 @@ const ChatContainer = () => {
 
   if (!authUser || !selectedUser) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center">
-        <p className="text-gray-500">Loading chat...</p>
+      <div className="flex-1 flex flex-col items-center justify-center bg-blue-50">
+        <p className="text-blue-700">Loading chat...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto   ">
+    <div className="flex-1 flex flex-col overflow-auto bg-blue-50">
       <ChatHeader onSearch={setSearchQuery} />
 
-      {/* 🔹 Chat Messages Section */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-      {messages.map((message, index) => (
-  <div 
-    key={message._id || `message-${index}`}
-    className={`flex ${message.senderId === authUser._id ? "justify-end" : "justify-start"}`}
-  >
-
-
-            {/* Sender's Profile Picture */}
-            {message.senderId !== authUser._id && (
-              <div className="mr-2">
-                <div className="w-10 h-10 rounded-full border overflow-hidden">
-                  <img src={selectedUser.profilePic || userPlaceholder} alt="Receiver Profile" className="w-full h-full object-cover" />
-                </div>
-              </div>
-            )}
-
-            <div className={`text-sm ${message.senderId === authUser._id ? "  text-white rounded-br-none" : "  text-black rounded-bl-none"}`}>
-              {message.text && (
-                <p className={`px-4 py-2 rounded-lg ${message.senderId === authUser._id ? "bg-[#81b9a4]" : "bg-gray-200"}`}>
-                  {highlightMatch(message.text, searchQuery)}
-                </p>
-              )}
-
-              {message.image && (
-                <img src={message.image} alt="Attachment" className="w-40 h-40 rounded-md mt-2 object-cover" />
-              )}
-
-              {message.audio && (
-                <div className="flex items-center gap-2 bg-[#d9ede5] p-2 rounded-lg shadow-md w-56">
-                  <audio controls className="w-full" style={{ height: "32px", borderRadius: "8px", backgroundColor: "white" }}>
-                    <source src={message.audio} type="audio/webm" />
-                    Your browser does not support the audio element.
-                  </audio>
-                </div>
-              )}
-
-              {message.document && (
-                <div className="flex items-center gap-3 bg-[#edf3f0] p-3 rounded-lg shadow-md mt-2 max-w-xs">
-                  <File size={22} className="text-blue-600" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-800">
-                      {message.documentName || "Document"}
-                    </p>
-                    <button
-                      onClick={() => {
-                        const fileExtension = message.document.split(".").pop();
-                        if (["pdf", "jpg", "png"].includes(fileExtension.toLowerCase())) {
-                          window.open(message.document, "_blank"); // Open in new tab
-                        } else {
-                          window.location.href = message.document; 
-                        }
-                      }}
-                      className="text-blue-500 text-xs hover:underline"
-                    >
-                      Tap to Open
-                    </button>
+      {/* Chat Messages Section */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-blue-100">
+        {messages.map((message, index) => {
+          const isSender = message.senderId === authUser._id;
+          return (
+            <div
+              key={message._id || `message-${index}`}
+              className={`flex ${isSender ? "justify-end" : "justify-start"}`}
+            >
+              {/* Sender's Profile Picture (only on received messages) */}
+              {!isSender && (
+                <div className="mr-3 mt-auto">
+                  <div className="w-12 h-12 rounded-full border-2 border-blue-400 overflow-hidden shadow-sm">
+                    <img
+                      src={selectedUser.profilePic || userPlaceholder}
+                      alt="Receiver Profile"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <a href={message.document} download={message.documentName || "document"} className="text-gray-600">
-                    <Download size={20} />
-                  </a>
                 </div>
               )}
 
-              <time className={`text-xs opacity-60 mt-2 text-gray-500 block ${message.senderId === authUser._id ? "text-right" : "text-right"}`}>
-                {formatMessageTime(message.createdAt)}
-              </time>
-            </div>
+              {/* Message bubble */}
+              <div
+                className={`max-w-[70%] px-5 py-3 rounded-2xl shadow-md
+                  ${isSender
+                    ? "bg-blue-600 text-white rounded-br-none"
+                    : "bg-white border border-blue-300 text-gray-900 rounded-bl-none"
+                }`}
+              >
+                {message.text && (
+                  <p className="whitespace-pre-wrap break-words text-sm leading-relaxed">
+                    {highlightMatch(message.text, searchQuery)}
+                  </p>
+                )}
 
-            {message.senderId === authUser._id && (
-              <div className="ml-2">
-                <div className="w-10 h-10 rounded-full border overflow-hidden">
-                  <img src={authUser.profilePic || userPlaceholder} alt="Sender Profile" className="w-full h-full object-cover" />
-                </div>
+                {message.image && (
+                  <img
+                    src={message.image}
+                    alt="Attachment"
+                    className="w-44 h-44 rounded-lg mt-3 object-cover shadow"
+                  />
+                )}
+
+                {message.audio && (
+                  <div className="flex items-center gap-3 bg-blue-100 p-2 rounded-lg shadow-md mt-3">
+                    <audio
+                      controls
+                      className="w-full"
+                      style={{ height: "34px", borderRadius: "8px", backgroundColor: "white" }}
+                    >
+                      <source src={message.audio} type="audio/webm" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                )}
+
+                {message.document && (
+                  <div className="flex items-center gap-3 bg-blue-100 p-3 rounded-lg shadow-md mt-3 max-w-xs">
+                    <File size={22} className="text-blue-600" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-blue-900">
+                        {message.documentName || "Document"}
+                      </p>
+                      <button
+                        onClick={() => {
+                          const fileExtension = message.document.split(".").pop();
+                          if (["pdf", "jpg", "png"].includes(fileExtension.toLowerCase())) {
+                            window.open(message.document, "_blank");
+                          } else {
+                            window.location.href = message.document;
+                          }
+                        }}
+                        className="text-blue-700 text-xs hover:underline"
+                      >
+                        Tap to Open
+                      </button>
+                    </div>
+                    <a
+                      href={message.document}
+                      download={message.documentName || "document"}
+                      className="text-blue-600 hover:text-blue-800 transition"
+                      title="Download document"
+                    >
+                      <Download size={20} />
+                    </a>
+                  </div>
+                )}
+
+                <time
+                  className={`block mt-2 text-xs opacity-70 ${
+                    isSender ? "text-blue-100 text-right" : "text-blue-700 text-left"
+                  }`}
+                >
+                  {formatMessageTime(message.createdAt)}
+                </time>
               </div>
-            )}
-          </div>
-        ))}
+
+              {/* Sender's Profile Picture (only for sent messages) */}
+              {isSender && (
+                <div className="ml-3 mt-auto">
+                  <div className="w-12 h-12 rounded-full border-2 border-blue-600 overflow-hidden shadow-sm">
+                    <img
+                      src={authUser.profilePic || userPlaceholder}
+                      alt="Sender Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
         <div ref={messageEndRef} />
       </div>
+
       <MessageInput />
     </div>
   );

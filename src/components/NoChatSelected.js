@@ -6,7 +6,7 @@ const NoChatSelected = () => {
       
         <div className="flex justify-center items-center gap-1 mb-4">
 
-        <h2 className="text-2xl font-bold">Welcome to Chattix!</h2>
+        <h2 className="text-2xl font-bold">Welcome to MessageI!</h2>
         
           {/* <div className="relative">
             <div

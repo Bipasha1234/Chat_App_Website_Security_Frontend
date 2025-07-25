@@ -23,8 +23,8 @@ const GroupSidebar = () => {
 
   return (
     <>
-      <aside className="h-full w-72 border-r border-base-300 flex flex-col shadow-lg font-open-sans bg-base-100 dark:bg-base-800">
-        <div className="p-4 flex items-center justify-between shadow dark:bg-base-800">
+      <aside className="h-[calc(100vh-4rem)] w-96 border-r bg-white border-blue-200 flex flex-col shadow font-open-sans relative ">
+        <div className="p-4 flex items-center justify-between shadow-md dark:bg-base-800 bg-blue-100">
           <h1 className="text-lg font-bold text-base-content dark:text-base-content">
             Groups
           </h1>

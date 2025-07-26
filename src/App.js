@@ -7,6 +7,7 @@ import Chat from "./core/user/chat.js";
 import GroupChat from "./core/user/groupChat.js";
 import ProfilePage from "./core/user/profile.js";
 import Settings from "./core/user/settings.js";
+import VerifyMfa from "./core/verifyMfa.js";
 import { useAuthStore } from "./store/useAuthStore.js";
 
 function App() {
@@ -32,10 +33,11 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-       
-  
-        <Route path="/register" element={!authUser ? <Register /> : <Navigate to="/chat" />} />
+
+
+        <Route path="/register" element={<Register />} />
         <Route path="/login-customer" element={!authUser ? <Login /> : <Navigate to="/chat" />} />
+         <Route path="/verify-mfa" element={!authUser ? <VerifyMfa /> : <Navigate to="/chat" />} />
         <Route path="/chat" element={authUser ? <Chat /> : <Navigate to="/login-customer" />} />
         <Route path="/group/chat" element={authUser ? <GroupChat/> : <Navigate to="/login-customer" />} />
         <Route path="/user/profile-setup" element={authUser ? <ProfilePage /> : <Navigate to="/login-customer" />} />

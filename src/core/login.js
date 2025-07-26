@@ -13,31 +13,56 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setError({});
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError({});
+  if (!email || !password) {
+    setError({
+      email: !email ? "Email is required" : "",
+      password: !password ? "Password is required" : "",
+    });
+    return;
+  }
 
-    if (!email || !password) {
-      setError({
-        email: !email ? "Email is required" : "",
-        password: !password ? "Password is required" : "",
-      });
-      return;
-    }
+  try {
+    const response = await login({ email, password });
 
-    try {
-      const response = await login({ email, password });
-      if (response?.token) {
-        toast.success("Login successful!");
-        navigate("/chat");
+    if (response?.mfaRequired) {
+      // MFA required, redirect to verify MFA page
+      toast.info("Verification code sent to your email.");
+      navigate("/verify-mfa", { state: { email } });  // Pass email to MFA page via route state
+    } else if (response?.token) {
+      toast.success("Login successful!");
+      navigate("/chat");
+    } else {
+      // Handle errors from backend
+      const msg = response?.message?.toLowerCase() || "";
+
+      const newErrors = {};
+
+      if (msg.includes("locked")) {
+        newErrors.general = response.message; // account locked message (show as general error)
+        toast.error(response.message);
+      } else if (msg.includes("wrong password")) {
+        newErrors.password = "Wrong password. Try again.";
+        toast.error(newErrors.password);
+      } else if (msg.includes("invalid credentials") || msg.includes("user not found")) {
+        newErrors.email = "No account with that email. Try again";
+        toast.error(newErrors.email);
       } else {
-        toast.error("Invalid credentials. Please try again.");
+        newErrors.general = "Login failed. Please try again.";
+        toast.error(newErrors.general);
       }
-    } catch (err) {
-      toast.error(err.message || "Login failed. Please try again.");
+
+      setError(newErrors);
     }
-  };
+  } catch (err) {
+    toast.error(err.message || "Login failed. Please try again.");
+  }
+};
+
+
 
   return (
     <>
@@ -87,6 +112,11 @@ const Login = () => {
               </button>
               {error.password && <p className="text-red-500 text-sm mt-1">{error.password}</p>}
             </div>
+
+            {error.general && (
+  <p className="text-red-600 text-center mb-4 font-semibold">{error.general}</p>
+)}
+
 
             {/* Submit Button */}
             <Button

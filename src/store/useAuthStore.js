@@ -79,20 +79,21 @@ export const useAuthStore = create((set, get) => ({
   },
 
   signup: async (data) => {
-    console.log("Request Payload:", data); // Log request payload
-    set({ isSigningUp: true });
-    try {
-      const res = await axiosInstance.post("/auth/register", data);
-      set({ authUser: res.data });
-      toast.success("Account created successfully");
-      get().connectSocket();
-    } catch (error) {
-      console.error("Signup Error:", error.response.data);
-      toast.error(error.response.data.message);
-    } finally {
-      set({ isSigningUp: false });
-    }
-  },
+  set({ isSigningUp: true });
+  try {
+    const res = await axiosInstance.post("/auth/register", data);
+    toast.success("Account created successfully");
+    // Do NOT set authUser here, user needs to log in separately
+    return { success: true };
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Signup failed");
+    return { success: false };
+  } finally {
+    set({ isSigningUp: false });
+  }
+},
+
+
 
   logout: async () => {
     try {
@@ -123,21 +124,41 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // Login function
-  login: async (data) => {
-    set({ isLoggingIn: true });
-    try {
-      const res = await axiosInstance.post("/auth/login", data);
-      set({ authUser: res.data });
-      toast.success("Logged in successfully");
-      get().connectSocket();
-    } catch (error) {
-      toast.error(error.response.data.message);
-    } finally {
-      set({ isLoggingIn: false });
-    }
-  },
+ login: async (data) => {
+  set({ isLoggingIn: true });
+  try {
+    const res = await axiosInstance.post("/auth/login", data);
+    // set({ authUser: res.data });
+    toast.success("Logged in successfully");
+    get().connectSocket();
+    return res.data;  // Return success data
+  } catch (error) {
+    // Return error info so frontend can handle it
+    const errorMsg = error.response?.data?.message || "Login failed";
+    toast.error(errorMsg);
+    return { message: errorMsg };  // Return an object with message
+  } finally {
+    set({ isLoggingIn: false });
+  }
+},
 
+verifyMfa: async ({ email, code }) => {
+  set({ isLoggingIn: true });
+  try {
+    // Assuming your backend expects { email, code } and returns user info + token on success
+    const res = await axiosInstance.post("/auth/verify-mfa", { email, code });
+    set({ authUser: res.data });
+    toast.success("MFA verification successful");
+    get().connectSocket();
+    return res.data;
+  } catch (error) {
+    const errorMsg = error.response?.data?.message || "MFA verification failed";
+    toast.error(errorMsg);
+    return { message: errorMsg };
+  } finally {
+    set({ isLoggingIn: false });
+  }
+},
   // forgotPassword: async (email) => {
   //   try {
   //     const res = await axiosInstance.post("/auth/forgot-password", { email });

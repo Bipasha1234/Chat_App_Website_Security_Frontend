@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/header.js";
 import { useAuthStore } from "../store/useAuthStore.js";
 
@@ -11,7 +11,7 @@ const Register = () => {
   });
   const [error, setError] = useState({});
   const { signup, isSigningUp } = useAuthStore();
-
+ const navigate = useNavigate(); 
   const validateForm = () => {
     const errors = {};
     if (!formData.fullName.trim()) errors.fullName = "Full Name is required";
@@ -25,10 +25,14 @@ const Register = () => {
     return Object.keys(errors).length === 0;
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      await signup(formData);
+      const result = await signup(formData);
+      if (result?.success) {
+        navigate("/login-customer");
+      }
     }
   };
 

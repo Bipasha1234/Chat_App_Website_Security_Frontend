@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Header from "../components/header.js";
 import { useAuthStore } from "../store/useAuthStore.js";
 
@@ -13,28 +14,56 @@ const Register = () => {
   const { signup, isSigningUp } = useAuthStore();
  const navigate = useNavigate(); 
   const validateForm = () => {
-    const errors = {};
-    if (!formData.fullName.trim()) errors.fullName = "Full Name is required";
-    if (!formData.email.trim()) errors.email = "Email is required";
-    if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Invalid email format";
-    if (!formData.password) errors.password = "Password is required";
-    if (formData.password.length < 6)
-      errors.password = "Password must be at least 6 characters";
+  const errors = {};
 
-    setError(errors);
-    return Object.keys(errors).length === 0;
-  };
+  if (!formData.fullName.trim()) errors.fullName = "Full Name is required";
 
+  if (!formData.email.trim()) errors.email = "Email is required";
+  else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Invalid email format";
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      const result = await signup(formData);
-      if (result?.success) {
-        navigate("/login-customer");
+  if (!formData.password) {
+    errors.password = "Password is required";
+  } else {
+    if (formData.password.length < 8)
+      errors.password = "Password must be at least 8 characters";
+    else if (formData.password.length > 64)
+      errors.password = "Password must be at most 64 characters";
+    else {
+      if (!/[A-Z]/.test(formData.password))
+        errors.password = "Password must contain at least one uppercase letter";
+      else if (!/[a-z]/.test(formData.password))
+        errors.password = "Password must contain at least one lowercase letter";
+      else if (!/\d/.test(formData.password))
+        errors.password = "Password must contain at least one digit";
+      else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password))
+        errors.password = "Password must contain at least one special character";
+    }
+  }
+
+  setError(errors);
+  return Object.keys(errors).length === 0;
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (validateForm()) {
+    const result = await signup(formData);
+
+    if (result?.success) {
+      navigate("/login-customer");
+    } else {
+      // New: Handle email already exists error from backend
+      if (result?.message?.toLowerCase().includes("email already exists") || 
+          result?.message?.toLowerCase().includes("email is already registered")) {
+        setError((prev) => ({ ...prev, email: "This email is already registered" }));
+      } else if(result?.message) {
+        // General error if needed
+        toast.error(result.message);
       }
     }
-  };
+  }
+};
+
 
   return (
     <>
@@ -115,7 +144,7 @@ const Register = () => {
           <p className="text-sm text-center text-gray-700 mt-5">
             Already have an account?{" "}
             <Link
-              to="/login"
+              to="/login-customer"
               className="text-blue-700 hover:underline font-semibold"
             >
               Sign In

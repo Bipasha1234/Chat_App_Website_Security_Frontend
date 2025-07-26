@@ -1,8 +1,8 @@
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
+import { decryptMessage, encryptMessage } from "../lib/crypto";
 import { useAuthStore } from "./useAuthStore";
-
 export const useChatStore = create((set, get) => ({
   messages: [],
   users: [],
@@ -35,57 +35,119 @@ export const useChatStore = create((set, get) => ({
       set({ isUsersLoading: false });
     }
   },
-  getMessages: async (userId) => {
-    set({ isMessagesLoading: true });
-  
-    try {
-      // Optimistically, retain the existing messages while loading new ones
-      const previousMessages = get().messages;
-  
-      // 1️⃣ If the messages are already loaded, we add the current ones at the beginning or end (depending on your chat structure)
-      set({ messages: [...previousMessages] });
-  
-      // 2️⃣ Fetch messages from the server
-      const res = await axiosInstance.get(`/messages/${userId}`);
-  
-      // 3️⃣ Once the response is received, update the state with the newly fetched messages
-      set({ messages: res.data });
-  
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to load messages");
-    } finally {
-      set({ isMessagesLoading: false });
-    }
-  },
-  
+  // Get individual messages and decrypt them
+getMessages: async (userId) => {
+  set({ isMessagesLoading: true });
 
-  sendMessage: async (messageData) => {
-    const { selectedUser, messages } = get();
-    try {
-      let res;
-      if (selectedUser) {
-        // 1️⃣ Immediately update the state with the new message
-        const newMessage = {
-          ...messageData,
-          senderId: selectedUser._id,  // Ensure sender ID is present if not in messageData
-          createdAt: new Date().toISOString(),  // Adding timestamp (in case it's missing)
-        };
-  
-        // Optimistically update state first
-        set({ messages: [...messages, newMessage] });
-  
-        // 2️⃣ Send message to backend
-        res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
-  
-        // 3️⃣ After the backend response, replace the message with full details (in case the server adds more fields)
-        set({ messages: [...messages, res.data] });
-  
-      }
-    } catch (error) {
-      // Handle error and revert state changes if necessary
-      toast.error(error.response?.data?.message || "Failed to send message");
+  try {
+    const res = await axiosInstance.get(`/messages/${userId}`);
+
+    // Decrypt each message text before saving
+    const decryptedMessages = res.data.map(msg => ({
+      ...msg,
+      text: decryptMessage(msg.text),
+    }));
+
+    set({ messages: decryptedMessages });
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to load messages");
+  } finally {
+    set({ isMessagesLoading: false });
+  }
+},
+
+// Get group messages and decrypt them
+getGroupMessages: async (groupId) => {
+  set({ isGroupsLoading: true });
+
+  try {
+    const res = await axiosInstance.get(`/groups/messages/${groupId}`);
+
+    // Decrypt each message text before saving
+    const decryptedMessages = res.data.messages.map(msg => ({
+      ...msg,
+      text: decryptMessage(msg.text),
+    }));
+
+    set({
+      messages: decryptedMessages,
+      profilePic: res.data.profilePic,
+      groupName: res.data.groupName,
+    });
+  } catch (error) {
+    toast.error("Failed to fetch messages");
+  } finally {
+    set({ isGroupsLoading: false });
+  }
+},
+
+// Send group message with encryption
+sendGroupMessage: async (messageData) => {
+  const { selectedGroup, messages } = get();
+  try {
+    if (selectedGroup) {
+      // Encrypt text before sending
+      const encryptedText = encryptMessage(messageData.text);
+
+      // Send encrypted message
+      const res = await axiosInstance.post(`/groups/messages/${selectedGroup._id}`, {
+        ...messageData,
+        text: encryptedText,
+      });
+
+      // Decrypt message from server before adding to state
+      const newMessage = res.data.newMessage || res.data;
+      newMessage.text = decryptMessage(newMessage.text);
+
+      set({ messages: [...messages, newMessage] });
     }
-  },
+  } catch (error) {
+    toast.error("Failed to send message");
+  }
+},
+
+
+
+
+sendMessage: async (messageData) => {
+  const { selectedUser, messages } = get();
+  try {
+    if (selectedUser) {
+      const encryptedText = encryptMessage(messageData.text); // Encrypt before sending
+
+      // Create a temporary optimistic message with a unique ID
+      const optimisticId = Date.now(); // can use uuid also
+      const optimisticMessage = {
+        ...messageData,
+        _id: optimisticId,
+        text: messageData.text, // Show plain text in UI
+        senderId: messageData.senderId,
+        receiverId: selectedUser._id,
+        createdAt: new Date().toISOString(),
+        isPending: true,
+      };
+
+      // Optimistically update UI
+      set({ messages: [...messages, optimisticMessage] });
+
+      // Send encrypted message to server
+      const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, {
+        senderId: messageData.senderId,
+        text: encryptedText,
+      });
+
+      // Replace optimistic message with server-confirmed message
+      const updatedMessages = get().messages.map((msg) =>
+        msg._id === optimisticId ? res.data : msg
+      );
+      set({ messages: updatedMessages });
+    }
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to send message");
+  }
+},
+
+
   
 
   deleteChat: async (userId) => {
@@ -93,16 +155,14 @@ export const useChatStore = create((set, get) => ({
       await axiosInstance.delete(`/messages/delete/${userId}`);
       toast.success("Chat deleted successfully");
   
-      // ✅ Update UI: Remove messages from state and ensure it's gone after refresh
       set((state) => ({
         users: state.users.map((user) =>
           user._id === userId ? { ...user, latestMessage: "" } : user
         ),
-        selectedUser: null, // ✅ Close chat window
-        messages: [], // ✅ Clear messages
+        selectedUser: null,
+        messages: [], 
       }));
   
-      // ✅ Fetch updated users to ensure deleted messages are not fetched again
       await get().getUsers();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to delete chat");
@@ -253,47 +313,6 @@ export const useChatStore = create((set, get) => ({
     }
 },
 
-  
-
-getGroupMessages: async (groupId) => {
-  set({ isGroupsLoading: true });  // Set loading state to true before making the API call
-
-  try {
-    const res = await axiosInstance.get(`/groups/messages/${groupId}`); 
-    console.log(res.data); // Fetch messages using axios
-    // On success, update the state with the response data (messages, profilePic, and groupName)
-    set({ 
-      messages: res.data.messages,  // Store the fetched messages in state
-      profilePic: res.data.profilePic,  // Store the group's profilePic
-      groupName: res.data.groupName,  // Store the group's name
-    });
-    
-  } catch (error) {
-    console.error("Error fetching messages:", error); 
-     // Log the error for debugging
-    toast.error("Failed to fetch messages");  // Show a toast error message
-  } finally {
-    set({ isGroupsLoading: false });  // Set loading state to false once the API call is done (either success or failure)
-  }
-},
-
-
-sendGroupMessage: async (messageData) => {
-  const { selectedGroup, messages } = get();
-  try {
-    if (selectedGroup) {
-      const res = await axiosInstance.post(`/groups/messages/${selectedGroup._id}`, messageData);
-
-      // Ensure response contains the correct structure
-      const newMessage = res.data.newMessage || res.data; // Use `res.data` if `newMessage` is not available
-
-      // Update state with new message appended
-      set({ messages: [...messages, newMessage] });
-    }
-  } catch (error) {
-    toast.error("Failed to send message");
-  }
-},
 
 updateGroupProfile: async (groupId, data) => {
   set({ isUpdatingProfile: true });
@@ -346,29 +365,6 @@ updateGroupName: async (groupId, groupName) => {
     set({ isUpdatingProfile: false });
   }
 },
-
-// addUserToGroup: async (groupId) => {
-//   try {
-//     const res = await axiosInstance.post(`/groups/add-user/${groupId}`);
-
-//     // Extract the updated group from the response
-//     const updatedGroup = res.data.group;
-
-//     // Update the store state
-//     set((state) => ({
-//       groups: state.groups.map((group) =>
-//         group._id === groupId ? updatedGroup : group
-//       ),
-//       selectedGroup:
-//         state.selectedGroup?._id === groupId ? updatedGroup : state.selectedGroup,
-//     }));
-
-//     toast.success("User added to the group successfully");
-//   } catch (error) {
-//     console.error("Error adding user to group:", error);
-//     toast.error(error.response?.data?.error || "Failed to add user to group");
-//   }
-// },
 
 addUserToGroup: async (groupId, userId) => {
   try {

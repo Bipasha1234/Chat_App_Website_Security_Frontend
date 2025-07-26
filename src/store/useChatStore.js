@@ -413,5 +413,48 @@ leaveGroup: async (groupId) => {
   }
 },
 
+
+
+  createTipPaymentIntent: async ({ amount, tipperId, receiverId }) => {
+    try {
+      const res = await axiosInstance.post("/payments/create-payment-intent", {
+        amount,
+        tipperId,
+        receiverId,
+      });
+
+      return res.data.clientSecret; // Return clientSecret to confirm on frontend
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to create payment intent");
+      return null;
+    }
+  },
+  saveTip: async ({ tipperId, receiverId, amount,messageId }) => {
+  try {
+    const res = await axiosInstance.post("/payments/save-tip", {
+      tipperId,
+      receiverId,
+      amount,
+      messageId
+    });
+    toast.success("Tip saved successfully!");
+    return res.data;
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to save tip");
+    return null;
+  }
+},
+
+getTipByMessageId: async (messageId) => {
+  try {
+    const res = await axiosInstance.get(`/payments/get-tip/${messageId}`);
+    return res.data; // This will contain the tip info
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to fetch tip");
+    return null;
+  }
+},
+
+
   setSelectedGroup: (group) => set({ selectedGroup: group }),
 }));

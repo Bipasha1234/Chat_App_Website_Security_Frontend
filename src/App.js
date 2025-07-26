@@ -1,6 +1,8 @@
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import { useEffect } from "react";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import PasswordReset from "./core/forgot-password.jsx";
+import PasswordReset from "./core/forgot-password.js";
 import Home from "./core/home.js";
 import Login from "./core/login.js";
 import Register from "./core/register.js";
@@ -10,6 +12,9 @@ import ProfilePage from "./core/user/profile.js";
 import Settings from "./core/user/settings.js";
 import VerifyMfa from "./core/verifyMfa.js";
 import { useAuthStore } from "./store/useAuthStore.js";
+
+// Replace with your test publishable key
+const stripePromise = loadStripe("pk_test_51Rp7ijEa2SJUqRgbuDZDNaaA617B1Da5ErS8FJGXH3CTlNr2c8KtUgbG188DVKHeaU9FbRjIp9hHVJ6ckj1zx8Lt00eytPJekh");
 
 function App() {
   const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
@@ -29,25 +34,24 @@ function App() {
       </div>
     );
 
-  return (
-    
-    <Router>
+ return (
+  <Router>
+    <Elements stripe={stripePromise}>
       <Routes>
         <Route path="/" element={<Home />} />
-
- <Route path="/forgot-password" element={<PasswordReset/>} />
+        <Route path="/forgot-password" element={<PasswordReset />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login-customer" element={!authUser ? <Login /> : <Navigate to="/chat" />} />
-         <Route path="/verify-mfa" element={!authUser ? <VerifyMfa /> : <Navigate to="/chat" />} />
+        <Route path="/verify-mfa" element={!authUser ? <VerifyMfa /> : <Navigate to="/chat" />} />
         <Route path="/chat" element={authUser ? <Chat /> : <Navigate to="/login-customer" />} />
-        <Route path="/group/chat" element={authUser ? <GroupChat/> : <Navigate to="/login-customer" />} />
+        <Route path="/group/chat" element={authUser ? <GroupChat /> : <Navigate to="/login-customer" />} />
         <Route path="/user/profile-setup" element={authUser ? <ProfilePage /> : <Navigate to="/login-customer" />} />
-         <Route path="/settings" element={authUser ? <Settings/> : <Navigate to="/login-customer" />} />
+        <Route path="/settings" element={authUser ? <Settings /> : <Navigate to="/login-customer" />} />
       </Routes>
-      
-    </Router>
-   
-  );
+    </Elements>
+  </Router>
+);
+
 }
 
 export default App;

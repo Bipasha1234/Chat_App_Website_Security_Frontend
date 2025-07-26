@@ -36,18 +36,24 @@ export const useAuthStore = create((set, get) => ({
   },
 
   // Reset password - Verifies the reset code and changes the password
-  resetPassword: async (email, password) => {
-    set({ isResettingPassword: true });
-    try {
-      await axiosInstance.post("/auth/reset-password", { email, password });
-      toast.success("Password reset successful.");
-      set({ isPasswordReset: true }); // Set the flag to true indicating the password reset was successful
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Error resetting password.");
-    } finally {
-      set({ isResettingPassword: false });
-    }
-  },
+ resetPassword: async (email, password) => {
+  set({ isResettingPassword: true, errorMessage: "" });
+  try {
+    await axiosInstance.post("/auth/reset-password", { email, password });
+    toast.success("Password reset successful.");
+    set({ isPasswordReset: true, errorMessage: "" });
+    return { success: true };
+  } catch (error) {
+    const message = error.response?.data?.message || "Error resetting password.";
+    set({ errorMessage: message });
+    toast.error(message);
+    return { success: false, message };
+  } finally {
+    set({ isResettingPassword: false });
+  }
+},
+
+
 
   // Verify reset code - Verify the code entered by the user
   verifyResetCode: async (email, resetCode) => {
@@ -156,15 +162,6 @@ verifyMfa: async ({ email, code }) => {
     set({ isLoggingIn: false });
   }
 },
-  // forgotPassword: async (email) => {
-  //   try {
-  //     const res = await axiosInstance.post("/auth/forgot-password", { email });
-  //     toast.success("Verification code sent to your email.");
-  //   } catch (error) {
-  //     toast.error(error.response?.data?.message || "Error sending verification code.");
-  //   }
-  // },
-  
   
   connectSocket: () => {
     const { authUser } = get();

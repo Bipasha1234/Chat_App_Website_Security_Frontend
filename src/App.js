@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import PasswordReset from "./core/forgot-password.jsx";
 import Home from "./core/home.js";
 import Login from "./core/login.js";
 import Register from "./core/register.js";
@@ -34,7 +35,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
 
-
+ <Route path="/forgot-password" element={<PasswordReset/>} />
         <Route path="/register" element={<Register />} />
         <Route path="/login-customer" element={!authUser ? <Login /> : <Navigate to="/chat" />} />
          <Route path="/verify-mfa" element={!authUser ? <VerifyMfa /> : <Navigate to="/chat" />} />

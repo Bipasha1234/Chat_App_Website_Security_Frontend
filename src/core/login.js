@@ -13,56 +13,59 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-const handleLogin = async (e) => {
-  e.preventDefault();
-  setError({});
 
-  if (!email || !password) {
-    setError({
-      email: !email ? "Email is required" : "",
-      password: !password ? "Password is required" : "",
-    });
-    return;
-  }
+  // New state for password expiry message
+  const [passwordExpired, setPasswordExpired] = useState(false);
 
-  try {
-    const response = await login({ email, password });
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError({});
+    setPasswordExpired(false);  // reset on each attempt
 
-    if (response?.mfaRequired) {
-      // MFA required, redirect to verify MFA page
-      toast.info("Verification code sent to your email.");
-      navigate("/verify-mfa", { state: { email } });  // Pass email to MFA page via route state
-    } else if (response?.token) {
-      toast.success("Login successful!");
-      navigate("/chat");
-    } else {
-      // Handle errors from backend
-      const msg = response?.message?.toLowerCase() || "";
-
-      const newErrors = {};
-
-      if (msg.includes("locked")) {
-        newErrors.general = response.message; // account locked message (show as general error)
-        toast.error(response.message);
-      } else if (msg.includes("wrong password")) {
-        newErrors.password = "Wrong password. Try again.";
-        toast.error(newErrors.password);
-      } else if (msg.includes("invalid credentials") || msg.includes("user not found")) {
-        newErrors.email = "No account with that email. Try again";
-        toast.error(newErrors.email);
-      } else {
-        newErrors.general = "Login failed. Please try again.";
-        toast.error(newErrors.general);
-      }
-
-      setError(newErrors);
+    if (!email || !password) {
+      setError({
+        email: !email ? "Email is required" : "",
+        password: !password ? "Password is required" : "",
+      });
+      return;
     }
-  } catch (err) {
-    toast.error(err.message || "Login failed. Please try again.");
-  }
-};
 
+    try {
+      const response = await login({ email, password });
 
+      if (response?.mfaRequired) {
+        toast.info("Verification code sent to your email.");
+        navigate("/verify-mfa", { state: { email } });
+      } else if (response?.token) {
+        toast.success("Login successful!");
+        navigate("/chat");
+      } else {
+        const msg = response?.message?.toLowerCase() || "";
+        const newErrors = {};
+
+        if (msg.includes("password expired")) {
+          // Instead of navigating directly, show the message & button
+          setPasswordExpired(true);
+        } else if (msg.includes("locked")) {
+          newErrors.general = response.message;
+          toast.error(response.message);
+        } else if (msg.includes("wrong password")) {
+          newErrors.password = "Wrong password. Try again.";
+          toast.error(newErrors.password);
+        } else if (msg.includes("invalid credentials") || msg.includes("user not found")) {
+          newErrors.email = "No account with that email. Try again";
+          toast.error(newErrors.email);
+        } else {
+          newErrors.general = "Login failed. Please try again.";
+          toast.error(newErrors.general);
+        }
+
+        setError(newErrors);
+      }
+    } catch (err) {
+      toast.error(err.message || "Login failed. Please try again.");
+    }
+  };
 
   return (
     <>
@@ -113,10 +116,23 @@ const handleLogin = async (e) => {
               {error.password && <p className="text-red-500 text-sm mt-1">{error.password}</p>}
             </div>
 
-            {error.general && (
-  <p className="text-red-600 text-center mb-4 font-semibold">{error.general}</p>
-)}
+            {/* Password expired message with reset button */}
+            {passwordExpired && (
+              <div className="mb-5 flex items-center text-xs justify-between bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
+                <span>Your password has expired. Please reset your password.</span>
+                <button
+                  type="button"
+                  onClick={() => navigate("/forgot-password", { state: { email } })}
+                  className="bg-red-500 hover:bg-red-600 text-white px-5 py-1 text-xs rounded"
+                >
+                  Reset Password
+                </button>
+              </div>
+            )}
 
+            {error.general && (
+              <p className="text-red-600 text-center mb-4 font-semibold">{error.general}</p>
+            )}
 
             {/* Submit Button */}
             <Button

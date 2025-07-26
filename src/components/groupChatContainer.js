@@ -1,8 +1,10 @@
 import { Download, File } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { IoMdCash } from "react-icons/io";
 import userPlaceholder from "../assets/images/group.png";
 import GroupChatHeader from "../components/groupChatHeader";
 import GroupMessageInput from "../components/groupMessageInput";
+import TipPaymentForm from "../core/tipPaymentForm";
 import { formatMessageTime } from "../lib/utils";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
@@ -15,6 +17,10 @@ const GroupChatContainer = () => {
     selectedGroup,
     sendGroupMessage,
   } = useChatStore();
+const [tippingMessage, setTippingMessage] = useState(null);
+const [tipAmount, setTipAmount] = useState("");
+const [groupMessageTips, setGroupMessageTips] = useState({});
+const { getTipByMessageId, createTipPaymentIntent, saveTip } = useChatStore();
 
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
@@ -32,6 +38,28 @@ const GroupChatContainer = () => {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+
+
+  useEffect(() => {
+  const fetchTips = async () => {
+    const tipsMap = {};
+    for (const msg of messages) {
+      try {
+        const tip = await getTipByMessageId(msg._id);
+        if (tip) {
+          tipsMap[msg._id] = tip.amount;
+        }
+      } catch (err) {
+        console.error(`Error fetching tip for message ${msg._id}`, err);
+      }
+    }
+    setGroupMessageTips(tipsMap);
+  };
+
+  if (messages.length > 0) {
+    fetchTips();
+  }
+}, [messages, getTipByMessageId]);
 
   const handleSendMessage = async (messageText) => {
     if (!messageText.trim()) return;
@@ -95,8 +123,7 @@ const GroupChatContainer = () => {
       </div>
     );
   }
-
-  return (
+return (
     <div className="flex-1 flex flex-col overflow-auto">
       <GroupChatHeader group={selectedGroup} onSearch={setSearchQuery} />
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -120,6 +147,7 @@ const GroupChatContainer = () => {
                     alt="Sender"
                   />
                 )}
+
                 <div
                   className={`max-w-[70%] px-5 py-3 rounded-2xl shadow-md text-sm ${
                     isSender
@@ -131,14 +159,14 @@ const GroupChatContainer = () => {
                     {message.senderId?.fullName}
                   </p>
 
-                  {/* Text Message */}
+                  
+
                   {message.text && (
                     <p className="leading-relaxed">
                       {highlightMatch(message.text, searchQuery)}
                     </p>
                   )}
 
-                  {/* Image */}
                   {message.image && (
                     <img
                       src={message.image}
@@ -147,7 +175,6 @@ const GroupChatContainer = () => {
                     />
                   )}
 
-                  {/* Audio */}
                   {message.audio && (
                     <div className="flex items-center gap-2 bg-[#d9ede5] p-2 rounded-lg shadow-md w-56 mt-2">
                       <audio controls className="w-full">
@@ -157,7 +184,6 @@ const GroupChatContainer = () => {
                     </div>
                   )}
 
-                  {/* Document */}
                   {message.document && (
                     <div className="flex items-center gap-3 bg-[#edf3f0] p-3 rounded-lg shadow-md mt-2 max-w-xs">
                       <File size={22} className="text-blue-600" />
@@ -187,9 +213,24 @@ const GroupChatContainer = () => {
                         <Download size={20} />
                       </a>
                     </div>
+
+                    
+                  )}
+{!isSender && !groupMessageTips[message._id] && (
+                    <button
+                      onClick={() => setTippingMessage(message)}
+                      className="mt-2 text-blue-600 hover:underline text-xs font-semibold ml-32"
+                      title={`Tip ${message.senderId?.fullName || "user"}`}
+                    >
+                      Tip <IoMdCash size={16} className="inline-block text-green-500" />
+                    </button>
                   )}
 
-                  {/* Timestamp */}
+                  {groupMessageTips[message._id] && (
+                    <div className="mt-2  text-yellow-600 ml-32 text-xs font-medium">
+                      <IoMdCash size={16} className="inline-block text-green-500" /> Tipped: Rs.{groupMessageTips[message._id]}
+                    </div>
+                  )}
                   <time className="text-xs opacity-70 mt-2 block">
                     {formatMessageTime(message.createdAt)}
                   </time>
@@ -200,7 +241,54 @@ const GroupChatContainer = () => {
         )}
         <div ref={messageEndRef} />
       </div>
+
       <GroupMessageInput onSend={handleSendMessage} />
+
+      {/* Tip Modal (Only one instance outside of the map) */}
+      {tippingMessage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setTippingMessage(null)}
+        >
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg w-80"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-4">
+              Tip {tippingMessage?.senderId?.fullName || "user"}
+            </h3>
+
+            <input
+              type="number"
+              min="1"
+              placeholder="Enter tip amount (Rs)"
+              value={tipAmount}
+              onChange={(e) => setTipAmount(e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+
+            <TipPaymentForm
+              tipAmount={tipAmount}
+              receiverId={tippingMessage?.senderId?._id}
+              tipperId={authUser._id}
+              messageId={tippingMessage?._id}
+              createTipPaymentIntent={createTipPaymentIntent}
+              saveTip={saveTip}
+              onClose={() => {
+                setTippingMessage(null);
+                setTipAmount("");
+              }}
+            />
+
+            <button
+              onClick={() => setTippingMessage(null)}
+              className="mt-4 w-full py-2 rounded bg-gray-300 hover:bg-gray-400"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -58,13 +58,16 @@ const TipPaymentForm = ({ tipAmount, onClose, receiverId, tipperId, messageId,cr
   return (
     <div className="space-y-4">
       <CardElement className="border p-3 rounded" />
-      <button
+      <div className="flex justify-center w-full items-center">
+         <button
         onClick={handleSendTip}
         disabled={loading}
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        className="px-4 py-2 bg-blue-600 text-white w-full rounded hover:bg-blue-700 flex justify-center items-center disabled:opacity-50 transition"
       >
-        {loading ? "Processing..." : `Send $${tipAmount}`}
+        {loading ? "Processing..." : `Send Rs.${tipAmount}`}
       </button>
+      </div>
+     
     </div>
   );
 };

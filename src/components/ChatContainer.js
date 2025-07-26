@@ -1,15 +1,14 @@
 import { Download, File } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { IoMdCash } from "react-icons/io";
 import userPlaceholder from "../assets/images/user.png";
-import TipPaymentForm from "../core/tipPaymentForm";
 import { formatMessageTime } from "../lib/utils";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
+
 const ChatContainer = () => {
   const {
     messages,
@@ -18,20 +17,12 @@ const ChatContainer = () => {
     selectedUser,
     subscribeToMessages,
     unsubscribeFromMessages,
-    createTipPaymentIntent,
-    saveTip,
-    getTipByMessageId
   } = useChatStore();
 
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
-const [messageTips, setMessageTips] = useState({});
 
-const [tippingMessage, setTippingMessage] = useState(null); // message being tipped
-const [tipAmount, setTipAmount] = useState(""); // amount to tip
-
- 
   useEffect(() => {
     if (selectedUser?._id && authUser) {
       getMessages(selectedUser._id);
@@ -43,32 +34,11 @@ const [tipAmount, setTipAmount] = useState(""); // amount to tip
     };
   }, [selectedUser?._id, authUser, getMessages, subscribeToMessages, unsubscribeFromMessages]);
 
-
   useEffect(() => {
     if (messageEndRef.current && messages) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
-useEffect(() => {
-  const fetchTips = async () => {
-    const tipsMap = {};
-    for (const msg of messages) {
-      try {
-        const tip = await getTipByMessageId(msg._id);
-        if (tip) {
-          tipsMap[msg._id] = tip.amount;
-        }
-      } catch (err) {
-        console.error(`Error fetching tip for message ${msg._id}`, err);
-      }
-    }
-    setMessageTips(tipsMap);
-  };
-
-  if (messages.length > 0) {
-    fetchTips();
-  }
-}, [messages, getTipByMessageId]);
 
   const highlightMatch = (text, query) => {
     if (!query) return text;
@@ -126,7 +96,6 @@ useEffect(() => {
                   </div>
                 </div>
               )}
-              
 
               {/* Message bubble */}
               <div
@@ -196,29 +165,13 @@ useEffect(() => {
                 )}
 
                 <time
-                  className={`block mt-2 text-xs opacity-70 ${isSender ? "text-blue-100 text-right" : "text-blue-700 text-left"}`}
+                  className={`block mt-2 text-xs opacity-70 ${
+                    isSender ? "text-blue-100 text-right" : "text-blue-700 text-left"
+                  }`}
                 >
                   {formatMessageTime(message.createdAt)}
                 </time>
-
-                {/* Tip button for all messages except sender's own */}
-                {!isSender && !messageTips[message._id] && (
-  <button
-    onClick={() => setTippingMessage(message)}
-    className="mt-2 text-blue-600 hover:underline text-xs font-semibold"
-    title={`Tip ${selectedUser.name || "user"}`}
-  >
-    Tip <IoMdCash size={16} className="inline-block text-green-500" />
-  </button>
-)}
-
               </div>
-              {messageTips[message._id] && (
-  <div className="mt-2 ml-2 text-sm text-yellow-600 font-medium">
-    <IoMdCash size={16} className="inline-block text-green-500" /> Tipped: ₹{messageTips[message._id]}
-  </div>
-)}
-
 
               {/* Sender's Profile Picture (only for sent messages) */}
               {isSender && (
@@ -239,55 +192,6 @@ useEffect(() => {
       </div>
 
       <MessageInput />
-
-      {tippingMessage && (
-  <div
-    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    onClick={() => setTippingMessage(null)}
-  >
-    <div
-      className="bg-white p-6 rounded-lg shadow-lg w-80"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <h3 className="text-lg font-semibold mb-4">
-        Tip {selectedUser.name || "user"}
-      </h3>
-
-      <input
-        type="number"
-        min="1"
-        placeholder="Enter tip amount ($)"
-        value={tipAmount}
-        onChange={(e) => setTipAmount(e.target.value)}
-        className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
-
-      {/* Import and use your TipPaymentForm here */}
-      <TipPaymentForm
-        tipAmount={tipAmount}
-        receiverId={selectedUser._id}
-        tipperId={authUser._id}
-         messageId={tippingMessage?._id} 
-
-        createTipPaymentIntent={createTipPaymentIntent} 
-          saveTip={saveTip} 
-        // pass backend function to create payment intent
-        onClose={() => {
-          setTippingMessage(null);
-          setTipAmount("");
-        }}
-      />
-
-      <button
-        onClick={() => setTippingMessage(null)}
-        className="mt-4 w-full py-2 rounded bg-gray-300 hover:bg-gray-400"
-      >
-        Cancel
-      </button>
-    </div>
-  </div>
-)}
-
     </div>
   );
 };

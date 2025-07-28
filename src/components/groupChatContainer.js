@@ -272,6 +272,7 @@ return (
               receiverId={tippingMessage?.senderId?._id}
               tipperId={authUser._id}
               messageId={tippingMessage?._id}
+              transactionId={tippingMessage?._id}
               createTipPaymentIntent={createTipPaymentIntent}
               saveTip={saveTip}
               onClose={() => {

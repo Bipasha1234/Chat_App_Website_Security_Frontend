@@ -408,9 +408,6 @@ leaveGroup: async (groupId) => {
     toast.error(error.response?.data?.message || "Failed to leave group");
   }
 },
-
-
-
   createTipPaymentIntent: async ({ amount, tipperId, receiverId }) => {
     try {
       const res = await axiosInstance.post("/payments/create-payment-intent", {
@@ -425,13 +422,14 @@ leaveGroup: async (groupId) => {
       return null;
     }
   },
-  saveTip: async ({ tipperId, receiverId, amount,messageId }) => {
+  saveTip: async ({ tipperId, receiverId, amount,messageId,transactionId }) => {
   try {
     const res = await axiosInstance.post("/payments/save-tip", {
       tipperId,
       receiverId,
       amount,
-      messageId
+      messageId,
+      transactionId
     });
     toast.success("Tip saved successfully!");
     return res.data;

@@ -65,13 +65,13 @@ const handleSubmit = async (e) => {
       <Header />
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-200 font-open-sans px-4">
         <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md border border-blue-300">
-          <h2 className="text-3xl font-bold text-blue-800 text-center mb-6">
+          <h2 className="text-3xl font-bold text-black text-center mb-6">
             Password Reset
           </h2>
 
           {!isCodeSent ? (
             <form onSubmit={handleForgotPassword} className="space-y-6">
-              <p className="text-sm font-medium text-center text-blue-700 mb-4">
+              <p className="text-sm font-medium text-center text-black mb-4">
                 Enter your email to receive a reset code
               </p>
 
@@ -98,7 +98,7 @@ const handleSubmit = async (e) => {
             </form>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
-              <p className="text-sm font-medium text-center text-blue-700 mb-4">
+              <p className="text-sm font-medium text-center text-black mb-4">
                 Enter the reset code sent to your email and your new password
               </p>
 

@@ -41,12 +41,12 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/forgot-password" element={<PasswordReset />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/login-customer" element={!authUser ? <Login /> : <Navigate to="/chat" />} />
+        <Route path="/login" element={!authUser ? <Login /> : <Navigate to="/chat" />} />
         <Route path="/verify-mfa" element={!authUser ? <VerifyMfa /> : <Navigate to="/chat" />} />
-        <Route path="/chat" element={authUser ? <Chat /> : <Navigate to="/login-customer" />} />
-        <Route path="/group/chat" element={authUser ? <GroupChat /> : <Navigate to="/login-customer" />} />
-        <Route path="/user/profile-setup" element={authUser ? <ProfilePage /> : <Navigate to="/login-customer" />} />
-        <Route path="/settings" element={authUser ? <Settings /> : <Navigate to="/login-customer" />} />
+        <Route path="/chat" element={authUser ? <Chat /> : <Navigate to="/login" />} />
+        <Route path="/group/chat" element={authUser ? <GroupChat /> : <Navigate to="/login" />} />
+        <Route path="/user/profile-setup" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
+        <Route path="/settings" element={authUser ? <Settings /> : <Navigate to="/login" />} />
       </Routes>
     </Elements>
   </Router>

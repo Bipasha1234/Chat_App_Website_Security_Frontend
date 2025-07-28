@@ -27,7 +27,7 @@ function MainHome() {
               Get Started
             </button>
             <button
-              onClick={() => navigate("/login-customer")}
+              onClick={() => navigate("/login")}
               className="border border-blue-700 text-blue-700 px-6 py-3 rounded hover:bg-blue-100 transition"
             >
               Login

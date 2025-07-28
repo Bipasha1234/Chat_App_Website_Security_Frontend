@@ -7,7 +7,7 @@ function Header() {
   const navigate = useNavigate();
 
   const handleHome = () => navigate("/");
-  const handleLogIn = () => navigate("/login-customer");
+  const handleLogIn = () => navigate("/login");
 
   return (
     <header className="bg-white shadow sticky top-0 z-50  font-open-sans">

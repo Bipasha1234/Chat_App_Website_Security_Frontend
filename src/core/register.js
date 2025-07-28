@@ -50,7 +50,7 @@ const handleSubmit = async (e) => {
     const result = await signup(formData);
 
     if (result?.success) {
-      navigate("/login-customer");
+      navigate("/login");
     } else {
       // New: Handle email already exists error from backend
       if (result?.message?.toLowerCase().includes("email already exists") || 

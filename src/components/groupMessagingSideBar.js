@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import groupUserIcon from "../assets/images/group.png";
+import { decryptMessage } from "../lib/crypto";
 import { useChatStore } from "../store/useChatStore";
 
 const GroupSidebar = () => {
@@ -66,15 +67,16 @@ const GroupSidebar = () => {
                   </div>
                   <div className="text-xs truncate text-gray-500 dark:text-gray-400">
                     {group.latestMessage ? (
-                      <>
-                        <span className="font-medium">
-                          {group.latestMessage.sender}:{" "}
-                        </span>
-                        {group.latestMessage.text}
-                      </>
-                    ) : (
-                      "No messages yet"
-                    )}
+  <>
+    <span className="font-medium">
+      {group.latestMessage.sender}:{" "}
+    </span>
+    {decryptMessage(group.latestMessage.text)}
+  </>
+) : (
+  "No messages yet"
+)}
+
                   </div>
                 </div>
               </div>

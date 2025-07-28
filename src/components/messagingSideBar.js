@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FiArrowLeft, FiMoreHorizontal, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
 import { IoMdChatbubbles } from "react-icons/io";
 import { MdGroupAdd } from "react-icons/md";
+import { decryptMessage } from "../lib/crypto";
 
 import userPlaceholder from "../assets/images/user.png";
 import CreateGroupModal from "../components/createGroupModel";
@@ -62,20 +63,31 @@ const MessagingSidebar = () => {
     setShowOptionsMenu(false);
   };
 
-  const sortedUsers = [...users]
-    .filter((user) => !blockedUsers.some((blocked) => blocked._id === user._id))
-    .filter((user) =>
-      user.fullName.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort(
-      (a, b) =>
-        (b.isUnread ? 1 : 0) - (a.isUnread ? 1 : 0) ||
-        (b.lastMessageTime || 0) - (a.lastMessageTime || 0)
-    );
+ const sortedUsers = [...users]
+  .filter((user) => !blockedUsers.some((blocked) => blocked._id === user._id))
+ .map((user) => {
+  let decryptedMessage = user.latestMessage;
+
+  if (user.latestMessage && user.latestMessage !== "Chat deleted") {
+    try {
+      decryptedMessage = decryptMessage(user.latestMessage);
+    } catch (e) {
+      console.error("Decryption error:", e);
+      decryptedMessage = "Unable to decrypt";
+    }
+  }
+
+  return {
+    ...user,
+    latestMessage: decryptedMessage,
+  };
+})
+
+
 
   return (
     <>
-      <aside className="h-full w-96 border-r  h-[calc(100vh-4rem)] bg-white border-blue-200 flex flex-col shadow font-open-sans relative">
+      <aside className="h-full w-96 border-r  bg-white border-blue-200 flex flex-col shadow font-open-sans relative">
         {/* Top bar */}
         {!isSelectingChats ? (
           <div className="p-4 flex items-center justify-between shadow-md bg-blue-100">

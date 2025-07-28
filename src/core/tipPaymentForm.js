@@ -1,7 +1,7 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { v4 as uuidv4 } from "uuid"; // npm install uuid
+import { v4 as uuidv4 } from "uuid";
 
 const TipPaymentForm = ({ tipAmount, onClose, receiverId, messageId, createTipPaymentIntent, saveTip }) => {
   const stripe = useStripe();

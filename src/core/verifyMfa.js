@@ -44,13 +44,13 @@ const VerifyMfa = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4 font-open-sans">
       <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md border border-blue-200">
-        <h2 className="text-3xl font-bold text-blue-800 text-center mb-6">
+        <h2 className="text-3xl font-bold text-black text-center mb-6">
           Verify MFA Code
         </h2>
         <form onSubmit={handleSubmit}>
           <label
             htmlFor="mfaCode"
-            className="block text-sm font-medium text-blue-700 mb-2"
+            className="block text-sm font-medium text-black mb-2"
           >
             Verification Code
           </label>

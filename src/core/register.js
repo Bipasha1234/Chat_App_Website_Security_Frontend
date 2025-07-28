@@ -70,14 +70,14 @@ const handleSubmit = async (e) => {
       <Header />
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 font-open-sans px-4">
         <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md border border-blue-200">
-          <h2 className="text-3xl font-bold text-blue-800 text-center mb-6">
+          <h2 className="text-3xl font-bold text-black text-center mb-6">
             Create Your Account
           </h2>
 
           <form onSubmit={handleSubmit}>
             {/* Full Name */}
             <div className="mb-4">
-              <label htmlFor="fullName" className="block text-sm font-medium text-blue-700 mb-1">
+              <label htmlFor="fullName" className="block text-sm font-medium text-black mb-1">
                 Full Name
               </label>
               <input
@@ -94,7 +94,7 @@ const handleSubmit = async (e) => {
 
             {/* Email */}
             <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-blue-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-black mb-1">
                 Email Address
               </label>
               <input
@@ -111,7 +111,7 @@ const handleSubmit = async (e) => {
 
             {/* Password */}
             <div className="mb-6">
-              <label htmlFor="password" className="block text-sm font-medium text-blue-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-black mb-1">
                 Password
               </label>
               <input

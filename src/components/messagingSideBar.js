@@ -1,6 +1,6 @@
 import debounce from "lodash/debounce";
 import { useEffect, useState } from "react";
-import { FiArrowLeft, FiMoreHorizontal, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
+import { FiArrowLeft, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
 import { IoMdChatbubbles } from "react-icons/io";
 import { MdGroupAdd } from "react-icons/md";
 import { decryptMessage } from "../lib/crypto";
@@ -93,7 +93,7 @@ const MessagingSidebar = () => {
           <div className="p-4 flex items-center justify-between shadow-md bg-blue-100">
             <h1 className="text-lg font-semibold text-black">Messaging</h1>
             <button
-              className="btn btn-sm btn-circle border-black text-blue-600"
+              className="btn btn-sm btn-circle border-black text-black"
               onClick={() => setShowAddOptions((prev) => !prev)}
             >
               <FiPlus />
@@ -125,7 +125,7 @@ const MessagingSidebar = () => {
           </div>
         )}
 
-        {/* Search box */}
+        {/* Search box
         <div className="p-4">
           <div className="flex items-center gap-2 border border-blue-300 rounded-md px-3 py-2">
             <FiSearch className="text-blue-500" />
@@ -136,10 +136,10 @@ const MessagingSidebar = () => {
               className="w-full bg-transparent outline-none text-blue-800"
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Users list */}
-        <div className="flex-1 overflow-y-auto p-2">
+        <div className="flex-1 overflow-y-auto p-2 mt-4 ">
           {sortedUsers.length > 0 ? (
             sortedUsers.map((user) => (
               <div
@@ -201,7 +201,7 @@ const MessagingSidebar = () => {
         {!isSelectingChats && showAddOptions && (
           <div className="absolute top-14 left-56 w-44 bg-white border border-blue-200 rounded-md shadow-lg z-50">
             <button
-              className="w-full px-4 py-3 flex items-center gap-3 text-blue-700 hover:bg-blue-50"
+              className="w-full px-4 py-3 flex items-center gap-3 text-black hover:bg-blue-50"
               onClick={() => setIsSelectingChats(true)}
             >
               <IoMdChatbubbles size={18} /> Select Chats

@@ -2,6 +2,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useEffect } from "react";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import AdminDashboardComponent from "./core/admin/adminDashboard.js";
 import PasswordReset from "./core/forgot-password.js";
 import Home from "./core/home.js";
 import Login from "./core/login.js";
@@ -41,12 +42,35 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/forgot-password" element={<PasswordReset />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/login" element={!authUser ? <Login /> : <Navigate to="/chat" />} />
-        <Route path="/verify-mfa" element={!authUser ? <VerifyMfa /> : <Navigate to="/chat" />} />
+        <Route
+  path="/login"
+  element={
+    !authUser ? (
+      <Login />
+    ) : authUser.role === "admin" ? (
+      <Navigate to="/admin-dashboard" />
+    ) : (
+      <Navigate to="/chat" />
+    )
+  }
+/>
+<Route
+  path="/verify-mfa"
+  element={
+    !authUser ? (
+      <VerifyMfa />
+    ) : authUser.role === "admin" ? (
+      <Navigate to="/admin-dashboard" />
+    ) : (
+      <Navigate to="/chat" />
+    )
+  }
+/>
         <Route path="/chat" element={authUser ? <Chat /> : <Navigate to="/login" />} />
         <Route path="/group/chat" element={authUser ? <GroupChat /> : <Navigate to="/login" />} />
         <Route path="/user/profile-setup" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
         <Route path="/settings" element={authUser ? <Settings /> : <Navigate to="/login" />} />
+        <Route path="/admin-dashboard" element={authUser ? <AdminDashboardComponent /> : <Navigate to="/login" />} />
       </Routes>
     </Elements>
   </Router>

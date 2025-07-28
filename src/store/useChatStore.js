@@ -14,7 +14,7 @@ export const useChatStore = create((set, get) => ({
   isUsersLoading: false,
   isMessagesLoading: false,
   blockedUsers: [],
-
+adminDashboardData: null,  // Add this to hold the dashboard data
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
@@ -53,6 +53,19 @@ getMessages: async (userId) => {
     set({ isMessagesLoading: false });
   }
 },
+
+
+
+  getAdminDashboard: async () => {
+    try {
+      const res = await axiosInstance.get("/admin-dashboard");
+      set({ adminDashboardData: res.data });
+      return res.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to fetch admin dashboard");
+      return null;
+    }
+  },
 
 // Get group messages and decrypt them
 getGroupMessages: async (groupId) => {

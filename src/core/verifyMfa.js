@@ -23,12 +23,17 @@ const VerifyMfa = () => {
 
     const response = await verifyMfa({ email, code: mfaCode });
     if (response?.token) {
-      toast.success("MFA verification successful");
-      navigate("/chat");
-    } else {
-      setError({ general: response?.message || "Invalid verification code" });
-      toast.error(response?.message || "Invalid verification code");
-    }
+  toast.success("MFA verification successful");
+
+  if (response.user.role === "admin") {
+    navigate("/admin-dashboard");
+  } else {
+    navigate("/chat");
+  }
+} else {
+  setError({ general: response?.message || "Invalid verification code" });
+  toast.error(response?.message || "Invalid verification code");
+}
   };
 
   if (!email) {

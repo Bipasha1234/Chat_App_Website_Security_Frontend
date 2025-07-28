@@ -1,147 +1,78 @@
+import { LogOut } from "lucide-react"; // optional: can use any icon set
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useChatStore } from "../../store/useChatStore";
 
 const AdminDashboardComponent = () => {
-  const getUsers = useChatStore((state) => state.getUsers);
-  const users = useChatStore((state) => state.users);
+  const getUsers = useChatStore((s) => s.getUsers);
+  const getGroups = useChatStore((s) => s.getGroups);
+  const getMessages = useChatStore((s) => s.getMessages);
+  const getAdminDashboard = useChatStore((s) => s.getAdminDashboard);
 
-  const getGroups = useChatStore((state) => state.getGroups);
-  const groups = useChatStore((state) => state.groups);
+  const users = useChatStore((s) => s.users);
+  const groups = useChatStore((s) => s.groups);
+  const messages = useChatStore((s) => s.messages);
+  const adminDashboardData = useChatStore((s) => s.adminDashboardData);
+  const logout = useAuthStore((s) => s.logout);
 
-  const getMessages = useChatStore((state) => state.getMessages);
-  const messages = useChatStore((state) => state.messages);
-
-  const logout = useAuthStore((state) => state.logout);
-
-  // Local state for loading indicator
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch users and groups first
-    async function fetchData() {
+    async function loadData() {
       setLoading(true);
       await getUsers();
       await getGroups();
-
-      // To get messages count, one way is to sum all messages per user
-      // But if messages are large, maybe just fetch messages of each user here for demo just get for first user or skip
-      // Or you can get total messages count from backend directly if API supports
-
-      // For demo, fetch messages for first user (if any)
-      if (users.length > 0) {
-        await getMessages(users[0]._id);
-      }
+      if (users.length > 0) await getMessages(users[0]._id);
+      await getAdminDashboard();
       setLoading(false);
     }
-    fetchData();
-  }, [getUsers, getGroups, getMessages, users.length]);
+    loadData();
+  }, []);
 
-  const handleLogout = () => {
-    logout();
-  };
-
-  if (loading)
-    return (
-      <div
-        style={{
-          color: "#0056b3",
-          padding: 20,
-          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-        }}
-      >
-        Loading...
-      </div>
-    );
+  if (loading) return <div className="text-blue-600 p-6 text-xl">Loading your dashboard...</div>;
 
   return (
-    <div style={{ fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}>
-      {/* Header bar */}
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          backgroundColor: "#007bff",
-          color: "white",
-          padding: "10px 20px",
-          fontWeight: "bold",
-          fontSize: "18px",
-        }}
-      >
-        <div style={{ color: "#cce5ff" }}>Welcome Admin, here are your stats:</div>
+    <div className="min-h-screen bg-blue-50 font-sans">
+      {/* Header */}
+      <header className="bg-blue-700 text-white px-8 py-5 flex justify-between items-center shadow-md">
+        <h1 className="text-2xl font-bold">MessageI</h1>
         <button
-          onClick={handleLogout}
-          style={{
-            backgroundColor: "#0056b3",
-            border: "none",
-            color: "white",
-            padding: "8px 16px",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
+          onClick={logout}
+          className="bg-white text-blue-700 hover:bg-gray-100 px-4 py-2 rounded flex items-center gap-2"
         >
+          <LogOut className="w-5 h-5" />
           Logout
         </button>
       </header>
 
-      {/* Stats Cards */}
-      <main
-        style={{
-          padding: "20px",
-          backgroundColor: "#e9f0ff",
-          minHeight: "calc(100vh - 56px)",
-          color: "#003366",
-          display: "flex",
-          gap: "20px",
-          flexWrap: "wrap",
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: "#cce0ff",
-            flex: "1 1 200px",
-            padding: "20px",
-            borderRadius: "6px",
-            textAlign: "center",
-            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-          }}
-        >
-          <h3>Total Users</h3>
-          <p style={{ fontSize: "2rem", fontWeight: "bold" }}>{users.length}</p>
-        </div>
+      {/* Title */}
+      <div className="px-8 py-4">
+        <h2 className="text-xl text-blue-800 font-semibold mb-2">Hi Admin, here’s what’s happening:</h2>
+        <p className="text-gray-600">Get insights on user activity, chat performance, and engagement metrics.</p>
+      </div>
 
-        <div
-          style={{
-            backgroundColor: "#cce0ff",
-            flex: "1 1 200px",
-            padding: "20px",
-            borderRadius: "6px",
-            textAlign: "center",
-            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-          }}
-        >
-          <h3>Total Groups</h3>
-          <p style={{ fontSize: "2rem", fontWeight: "bold" }}>{groups.length}</p>
-        </div>
-
-        <div
-          style={{
-            backgroundColor: "#cce0ff",
-            flex: "1 1 200px",
-            padding: "20px",
-            borderRadius: "6px",
-            textAlign: "center",
-            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-          }}
-        >
-          <h3>Total Messages (for first user)</h3>
-          <p style={{ fontSize: "2rem", fontWeight: "bold" }}>{messages.length}</p>
-        </div>
+      {/* Dashboard Stats */}
+      <main className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+        <StatCard title="Total Users" value={users.length} desc="All registered users on the platform." />
+        <StatCard title="Total Groups" value={groups.length} desc="Groups created for chatting." />
+        <StatCard title="Total Messages" value={adminDashboardData?.totalMessages || messages.length} desc="All messages sent till date." />
+        <StatCard title="Blocked Users" value={adminDashboardData?.blockedUsers || 0} desc="Users currently blocked." />
+        <StatCard title="Total Chats" value={adminDashboardData?.totalChats || users.length} desc="One-on-one chat instances." />
+        <StatCard title="Tips Given" value={adminDashboardData?.totalTips || 0} desc="Tips shared across users." />
+        <StatCard title="Online Users Now" value={adminDashboardData?.onlineUsers || 0} desc="Users currently active." />
       </main>
     </div>
   );
 };
+
+const StatCard = ({ title, value, desc }) => (
+  <div className="bg-white rounded-2xl shadow-md p-6 text-center hover:shadow-lg transition">
+    <div className="w-20 h-20 mx-auto mb-3 flex items-center justify-center rounded-full border-4 border-blue-300 bg-blue-50">
+      <p className="text-2xl font-bold text-blue-700">{value}</p>
+    </div>
+    <h3 className="text-blue-800 font-semibold text-lg">{title}</h3>
+    <p className="text-gray-500 text-sm mt-1">{desc}</p>
+  </div>
+);
 
 export default AdminDashboardComponent;

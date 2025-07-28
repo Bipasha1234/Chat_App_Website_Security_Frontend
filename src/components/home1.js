@@ -16,7 +16,7 @@ function MainHome() {
           <h1 className="text-4xl md:text-5xl font-bold text-blue-900 leading-tight">
             Connect Seamlessly with Your Loved Ones
           </h1>
-          <p className="text-lg text-blue-700 max-w-md">
+          <p className="text-lg text-black max-w-md">
             Private chats, group conversations, voice messages, stickers, and more all in one secure platform.
           </p>
           <div className="flex gap-6">
@@ -46,7 +46,7 @@ function MainHome() {
         <div className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center">
           <img src={icon7} alt="Private Messaging" className="w-20 h-20 mb-6" />
           <h3 className="text-xl font-semibold text-blue-800 mb-2">Private Messaging</h3>
-          <p className="text-blue-600">
+          <p className="text-black">
             Stay connected with people who matter most through secure, real-time private messages.
           </p>
         </div>
@@ -55,7 +55,7 @@ function MainHome() {
         <div className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center">
           <img src={icon8} alt="Group Chat" className="w-20 h-20 mb-6" />
           <h3 className="text-xl font-semibold text-blue-800 mb-2">Group Chats</h3>
-          <p className="text-blue-600">
+          <p className="text-black">
             Organize your friends and family effortlessly, with rich media and easy-to-use group conversations.
           </p>
         </div>
@@ -64,7 +64,7 @@ function MainHome() {
         <div className="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center">
           <img src={icon10} alt="Share Feelings" className="w-20 h-20 mb-6" />
           <h3 className="text-xl font-semibold text-blue-800 mb-2">Express Yourself</h3>
-          <p className="text-blue-600">
+          <p className="text-black">
             Use voice messages,send files,photos to communicate your mood and stories vividly.
           </p>
         </div>

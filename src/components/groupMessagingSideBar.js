@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { FiSearch } from "react-icons/fi";
 import groupUserIcon from "../assets/images/group.png";
 import { decryptMessage } from "../lib/crypto";
 import { useChatStore } from "../store/useChatStore";
@@ -30,8 +29,8 @@ const GroupSidebar = () => {
             Groups
           </h1>
         </div>
-        <div className="p-4">
-          <div className="flex items-center gap-2 border border-blue-300 rounded-md px-3 py-2">
+        {/* <div className="p-4"> */}
+          {/* <div className="flex items-center gap-2 border border-blue-300 rounded-md px-3 py-2">
             <FiSearch className="text-blue-600 dark:text-gray-400" />
             <input
               type="text"
@@ -39,18 +38,18 @@ const GroupSidebar = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-transparent outline-none text-base-content dark:text-base-content"
             />
-          </div>
-        </div>
+          </div> */}
+        {/* </div> */}
 
         <div className="flex-1 overflow-y-auto p-2">
           {filteredGroups.length > 0 ? (
             filteredGroups.map((group) => (
               <div
                 key={group._id}
-                className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all ${
+                className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all  ${
                   selectedGroup?._id === group._id
-                    ? "bg-base-300 dark:bg-base-600"
-                    : "hover:bg-base-200 dark:hover:bg-base-700"
+                    ? "bg-blue-100  "
+                    : "hover:bg-blue-50 "
                 }`}
                 onClick={() => handleGroupClick(group)}
               >

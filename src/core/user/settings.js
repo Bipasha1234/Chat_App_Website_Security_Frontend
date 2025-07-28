@@ -28,7 +28,7 @@ const Settings = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/login-customer");
+    navigate("/login");
   };
 
   return (

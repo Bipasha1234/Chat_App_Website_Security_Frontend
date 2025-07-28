@@ -15,8 +15,6 @@ export const useChatStore = create((set, get) => ({
   isMessagesLoading: false,
   blockedUsers: [],
 
-  
-
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {

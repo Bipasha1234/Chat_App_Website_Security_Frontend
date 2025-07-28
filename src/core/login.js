@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../components/button.js";
@@ -107,12 +108,12 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-9 text-blue-500 text-sm"
-              >
-                {showPassword ? "🙈" : "👁️"}
-              </button>
+  type="button"
+  onClick={() => setShowPassword(!showPassword)}
+  className="absolute right-3 top-9 text-blue-500 text-sm"
+>
+  {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+</button>
               {error.password && <p className="text-red-500 text-sm mt-1">{error.password}</p>}
             </div>
 

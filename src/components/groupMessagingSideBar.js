@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import groupUserIcon from "../assets/images/group.png";
-import { decryptMessage } from "../lib/crypto";
 import { useChatStore } from "../store/useChatStore";
 
 const GroupSidebar = () => {
@@ -29,17 +28,6 @@ const GroupSidebar = () => {
             Groups
           </h1>
         </div>
-        {/* <div className="p-4"> */}
-          {/* <div className="flex items-center gap-2 border border-blue-300 rounded-md px-3 py-2">
-            <FiSearch className="text-blue-600 dark:text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search groups..."
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-transparent outline-none text-base-content dark:text-base-content"
-            />
-          </div> */}
-        {/* </div> */}
 
         <div className="flex-1 overflow-y-auto p-2">
           {filteredGroups.length > 0 ? (
@@ -66,16 +54,16 @@ const GroupSidebar = () => {
                   </div>
                   <div className="text-xs truncate text-gray-500 dark:text-gray-400">
                     {group.latestMessage ? (
-  <>
-    <span className="font-medium">
-      {group.latestMessage.sender}:{" "}
-    </span>
-    {decryptMessage(group.latestMessage.text)}
-  </>
-) : (
-  "No messages yet"
-)}
-
+                      <>
+                        <span className="font-medium">
+                          {group.latestMessage.sender}:{" "}
+                        </span>
+                        {/* Directly display plain text from backend */}
+                        {group.latestMessage.text}
+                      </>
+                    ) : (
+                      "No messages yet"
+                    )}
                   </div>
                 </div>
               </div>

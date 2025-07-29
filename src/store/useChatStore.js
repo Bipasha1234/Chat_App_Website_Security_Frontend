@@ -1,7 +1,6 @@
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
-import { decryptMessage, encryptMessage } from "../lib/crypto";
 import { useAuthStore } from "./useAuthStore";
 export const useChatStore = create((set, get) => ({
   messages: [],
@@ -42,13 +41,8 @@ getMessages: async (userId) => {
   try {
     const res = await axiosInstance.get(`/messages/${userId}`);
 
-    // Decrypt each message text before saving
-    const decryptedMessages = res.data.map(msg => ({
-      ...msg,
-      text: decryptMessage(msg.text),
-    }));
-
-    set({ messages: decryptedMessages });
+    // No decrypting here, backend sends plain text
+    set({ messages: res.data });
   } catch (error) {
     toast.error(error.response?.data?.message || "Failed to load messages");
   } finally {
@@ -76,14 +70,9 @@ getGroupMessages: async (groupId) => {
   try {
     const res = await axiosInstance.get(`/groups/messages/${groupId}`);
 
-    // Decrypt each message text before saving
-    const decryptedMessages = res.data.messages.map(msg => ({
-      ...msg,
-      text: decryptMessage(msg.text),
-    }));
-
+    // No decrypting here, backend sends plain text
     set({
-      messages: decryptedMessages,
+      messages: res.data.messages,
       profilePic: res.data.profilePic,
       groupName: res.data.groupName,
     });
@@ -94,23 +83,17 @@ getGroupMessages: async (groupId) => {
   }
 },
 
+
 // Send group message with encryption
 sendGroupMessage: async (messageData) => {
   const { selectedGroup, messages } = get();
   try {
     if (selectedGroup) {
-      // Encrypt text before sending
-      const encryptedText = encryptMessage(messageData.text);
+      // Send plain text directly
+      const res = await axiosInstance.post(`/groups/messages/${selectedGroup._id}`, messageData);
 
-      // Send encrypted message
-      const res = await axiosInstance.post(`/groups/messages/${selectedGroup._id}`, {
-        ...messageData,
-        text: encryptedText,
-      });
-
-      // Decrypt message from server before adding to state
+      // No decrypting, backend sends plain text message
       const newMessage = res.data.newMessage || res.data;
-      newMessage.text = decryptMessage(newMessage.text);
 
       set({ messages: [...messages, newMessage] });
     }
@@ -119,37 +102,30 @@ sendGroupMessage: async (messageData) => {
   }
 },
 
-
-
-
 sendMessage: async (messageData) => {
   const { selectedUser, messages } = get();
   try {
     if (selectedUser) {
-      const encryptedText = messageData.text ? encryptMessage(messageData.text) : null; // Encrypt text if exists
-
-      // Create optimistic message with unique ID
-      const optimisticId = Date.now(); // or uuid
+      // Optimistic UI update with plain text
+      const optimisticId = Date.now();
       const optimisticMessage = {
         ...messageData,
         _id: optimisticId,
-        text: messageData.text || "", // show plain text in UI (not encrypted)
+        text: messageData.text || "",
         senderId: messageData.senderId,
         receiverId: selectedUser._id,
         createdAt: new Date().toISOString(),
         isPending: true,
       };
 
-      // Optimistically update UI
       set({ messages: [...messages, optimisticMessage] });
 
-      // Prepare payload for backend
+      // Prepare payload with plain text
       const payload = {
         senderId: messageData.senderId,
-        text: encryptedText,
+        text: messageData.text || null,
       };
 
-      // Attach optional fields only if they exist
       if (messageData.image) payload.image = messageData.image;
       if (messageData.audio) payload.audio = messageData.audio;
       if (messageData.document) {
@@ -157,12 +133,11 @@ sendMessage: async (messageData) => {
         payload.documentName = messageData.documentName || null;
       }
 
-      // Send request
       const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, payload);
 
-      // Replace optimistic message with server-confirmed message
+      // Replace optimistic with confirmed message (plain text)
       const updatedMessages = get().messages.map((msg) =>
-        msg._id === optimisticId ? res.data.data : msg // res.data.data assuming backend responds { data: newMessage }
+        msg._id === optimisticId ? res.data.data : msg
       );
       set({ messages: updatedMessages });
     }

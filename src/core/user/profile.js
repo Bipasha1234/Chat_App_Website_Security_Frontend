@@ -139,10 +139,7 @@ const ProfilePage = () => {
                 <span>Member Since:</span>
                 <span>{authUser.createdAt?.split("T")[0]}</span>
               </div>
-              <div className="flex justify-between">
-                <span>Status:</span>
-                <span className="text-green-600 font-semibold">Active</span>
-              </div>
+             
             </div>
           </div>
         </div>

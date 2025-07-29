@@ -1,4 +1,3 @@
-import { Download, File } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { IoMdCash } from "react-icons/io";
 import userPlaceholder from "../assets/images/group.png";
@@ -17,10 +16,11 @@ const GroupChatContainer = () => {
     selectedGroup,
     sendGroupMessage,
   } = useChatStore();
-const [tippingMessage, setTippingMessage] = useState(null);
-const [tipAmount, setTipAmount] = useState("");
-const [groupMessageTips, setGroupMessageTips] = useState({});
-const { getTipByMessageId, createTipPaymentIntent, saveTip } = useChatStore();
+
+  const [tippingMessage, setTippingMessage] = useState(null);
+  const [tipAmount, setTipAmount] = useState("");
+  const [groupMessageTips, setGroupMessageTips] = useState({});
+  const { getTipByMessageId, createTipPaymentIntent, saveTip } = useChatStore();
 
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
@@ -39,27 +39,26 @@ const { getTipByMessageId, createTipPaymentIntent, saveTip } = useChatStore();
     }
   }, [messages]);
 
-
   useEffect(() => {
-  const fetchTips = async () => {
-    const tipsMap = {};
-    for (const msg of messages) {
-      try {
-        const tip = await getTipByMessageId(msg._id);
-        if (tip) {
-          tipsMap[msg._id] = tip.amount;
+    const fetchTips = async () => {
+      const tipsMap = {};
+      for (const msg of messages) {
+        try {
+          const tip = await getTipByMessageId(msg._id);
+          if (tip) {
+            tipsMap[msg._id] = tip.amount;
+          }
+        } catch (err) {
+          console.error(`Error fetching tip for message ${msg._id}`, err);
         }
-      } catch (err) {
-        console.error(`Error fetching tip for message ${msg._id}`, err);
       }
-    }
-    setGroupMessageTips(tipsMap);
-  };
+      setGroupMessageTips(tipsMap);
+    };
 
-  if (messages.length > 0) {
-    fetchTips();
-  }
-}, [messages, getTipByMessageId]);
+    if (messages.length > 0) {
+      fetchTips();
+    }
+  }, [messages, getTipByMessageId]);
 
   const handleSendMessage = async (messageText) => {
     if (!messageText.trim()) return;
@@ -123,7 +122,8 @@ const { getTipByMessageId, createTipPaymentIntent, saveTip } = useChatStore();
       </div>
     );
   }
-return (
+
+  return (
     <div className="flex-1 flex flex-col overflow-auto">
       <GroupChatHeader group={selectedGroup} onSearch={setSearchQuery} />
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -159,78 +159,30 @@ return (
                     {message.senderId?.fullName}
                   </p>
 
-                  
-
                   {message.text && (
                     <p className="leading-relaxed">
                       {highlightMatch(message.text, searchQuery)}
                     </p>
                   )}
 
-                  {message.image && (
-                    <img
-                      src={message.image}
-                      alt="Attachment"
-                      className="w-40 h-40 rounded-md mt-2 object-cover"
-                    />
-                  )}
-
-                  {message.audio && (
-                    <div className="flex items-center gap-2 bg-[#d9ede5] p-2 rounded-lg shadow-md w-56 mt-2">
-                      <audio controls className="w-full">
-                        <source src={message.audio} type="audio/webm" />
-                        Your browser does not support the audio element.
-                      </audio>
-                    </div>
-                  )}
-
-                  {message.document && (
-                    <div className="flex items-center gap-3 bg-[#edf3f0] p-3 rounded-lg shadow-md mt-2 max-w-xs">
-                      <File size={22} className="text-blue-600" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-800">
-                          {message.documentName || "Document"}
-                        </p>
-                        <button
-                          onClick={() => {
-                            const ext = message.document.split(".").pop();
-                            if (["pdf", "jpg", "png"].includes(ext.toLowerCase())) {
-                              window.open(message.document, "_blank");
-                            } else {
-                              window.location.href = message.document;
-                            }
-                          }}
-                          className="text-blue-500 text-xs hover:underline"
-                        >
-                          Tap to Open
-                        </button>
-                      </div>
-                      <a
-                        href={message.document}
-                        download={message.documentName || "document"}
-                        className="text-gray-600"
-                      >
-                        <Download size={20} />
-                      </a>
-                    </div>
-
-                    
-                  )}
-{!isSender && !groupMessageTips[message._id] && (
+                  {!isSender && !groupMessageTips[message._id] && (
                     <button
                       onClick={() => setTippingMessage(message)}
                       className="mt-2 text-blue-600 hover:underline text-xs font-semibold ml-32"
                       title={`Tip ${message.senderId?.fullName || "user"}`}
                     >
-                      Tip <IoMdCash size={16} className="inline-block text-green-500" />
+                      Tip{" "}
+                      <IoMdCash size={16} className="inline-block text-green-500" />
                     </button>
                   )}
 
                   {groupMessageTips[message._id] && (
-                    <div className="mt-2  text-yellow-600 ml-32 text-xs font-medium">
-                      <IoMdCash size={16} className="inline-block text-green-500" /> Tipped: Rs.{groupMessageTips[message._id]}
+                    <div className="mt-2 text-yellow-600 ml-32 text-xs font-medium">
+                      <IoMdCash size={16} className="inline-block text-green-500" /> Tipped: Rs.
+                      {groupMessageTips[message._id]}
                     </div>
                   )}
+
                   <time className="text-xs opacity-70 mt-2 block">
                     {formatMessageTime(message.createdAt)}
                   </time>
@@ -244,7 +196,6 @@ return (
 
       <GroupMessageInput onSend={handleSendMessage} />
 
-      {/* Tip Modal (Only one instance outside of the map) */}
       {tippingMessage && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"

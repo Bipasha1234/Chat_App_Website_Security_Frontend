@@ -1,4 +1,4 @@
-import { MoreVertical, Search, Trash2, X } from "lucide-react";
+import { MoreVertical, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { MdBlock } from "react-icons/md";
@@ -92,30 +92,6 @@ const ChatHeader = ({ onSearch }) => {
         </div>
 
         <div className="flex items-center justify-end gap-2">
-          {/* 🔹 Search Button */}
-          {!showSearch ? (
-            <button onClick={toggleSearch} className="">
-              <Search size={20} />
-            </button>
-          ) : (
-            <div className="relative flex items-center  rounded-lg border px-2 py-1">
-              <Search size={20} className=" mr-2" />
-              <input
-                type="text"
-                placeholder="Search messages..."
-                className="outline-none bg-transparent w-40"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  onSearch(e.target.value);
-                }}
-              />
-              <button onClick={toggleSearch} className=" ml-2">
-                <X size={16} />
-              </button>
-            </div>
-          )}
-
           {/* 🔹 Three-Dot Menu */}
           <div className="relative">
             <button className="mt-2" onClick={() => setMenuOpen(!menuOpen)}>

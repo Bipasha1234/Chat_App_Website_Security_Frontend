@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { FiArrowLeft, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
 import { IoMdChatbubbles } from "react-icons/io";
 import { MdGroupAdd } from "react-icons/md";
-import { decryptMessage } from "../lib/crypto";
 
 import userPlaceholder from "../assets/images/user.png";
 import CreateGroupModal from "../components/createGroupModel";
@@ -63,31 +62,14 @@ const MessagingSidebar = () => {
     setShowOptionsMenu(false);
   };
 
- const sortedUsers = [...users]
-  .filter((user) => !blockedUsers.some((blocked) => blocked._id === user._id))
- .map((user) => {
-  let decryptedMessage = user.latestMessage;
-
-  if (user.latestMessage && user.latestMessage !== "Chat deleted") {
-    try {
-      decryptedMessage = decryptMessage(user.latestMessage);
-    } catch (e) {
-      console.error("Decryption error:", e);
-      decryptedMessage = "Unable to decrypt";
-    }
-  }
-
-  return {
-    ...user,
-    latestMessage: decryptedMessage,
-  };
-})
-
-
+  // Filter out blocked users but do not process latestMessage
+  const filteredUsers = users.filter(
+    (user) => !blockedUsers.some((blocked) => blocked._id === user._id)
+  );
 
   return (
     <>
-      <aside className="h-full w-96 border-r  bg-white border-blue-200 flex flex-col shadow font-open-sans relative">
+      <aside className="h-full w-96 border-r bg-white border-blue-200 flex flex-col shadow font-open-sans relative">
         {/* Top bar */}
         {!isSelectingChats ? (
           <div className="p-4 flex items-center justify-between shadow-md bg-blue-100">
@@ -125,29 +107,14 @@ const MessagingSidebar = () => {
           </div>
         )}
 
-        {/* Search box
-        <div className="p-4">
-          <div className="flex items-center gap-2 border border-blue-300 rounded-md px-3 py-2">
-            <FiSearch className="text-blue-500" />
-            <input
-              type="text"
-              placeholder="Search users..."
-              onChange={handleSearch}
-              className="w-full bg-transparent outline-none text-blue-800"
-            />
-          </div>
-        </div> */}
-
         {/* Users list */}
-        <div className="flex-1 overflow-y-auto p-2 mt-4 ">
-          {sortedUsers.length > 0 ? (
-            sortedUsers.map((user) => (
+        <div className="flex-1 overflow-y-auto p-2 mt-4">
+          {filteredUsers.length > 0 ? (
+            filteredUsers.map((user) => (
               <div
                 key={user._id}
                 className={`flex items-center gap-3 p-3 rounded-md cursor-pointer transition-all ${
-                  selectedUser?._id === user._id
-                    ? "bg-blue-100"
-                    : "hover:bg-blue-50"
+                  selectedUser?._id === user._id ? "bg-blue-100" : "hover:bg-blue-50"
                 }`}
                 onClick={() => !isSelectingChats && setSelectedUser(user)}
               >
@@ -182,13 +149,7 @@ const MessagingSidebar = () => {
                   >
                     {user.fullName}
                   </p>
-                  <p className="text-xs truncate text-gray-500">
-                    {user.latestMessage !== "Chat deleted" ? (
-                      user.latestMessage
-                    ) : (
-                      <span className="italic text-gray-400">Chat deleted</span>
-                    )}
-                  </p>
+                  {/* Removed latestMessage here */}
                 </div>
               </div>
             ))
@@ -218,7 +179,7 @@ const MessagingSidebar = () => {
             >
               <FiTrash2 /> Delete Chats
             </button>
-            
+
             <button
               className="w-full text-left flex items-center gap-2 p-2 rounded hover:bg-blue-50"
               onClick={() => setIsCreatingGroup(true)}

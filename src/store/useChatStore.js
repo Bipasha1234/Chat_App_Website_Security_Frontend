@@ -126,14 +126,14 @@ sendMessage: async (messageData) => {
   const { selectedUser, messages } = get();
   try {
     if (selectedUser) {
-      const encryptedText = encryptMessage(messageData.text); // Encrypt before sending
+      const encryptedText = messageData.text ? encryptMessage(messageData.text) : null; // Encrypt text if exists
 
-      // Create a temporary optimistic message with a unique ID
-      const optimisticId = Date.now(); // can use uuid also
+      // Create optimistic message with unique ID
+      const optimisticId = Date.now(); // or uuid
       const optimisticMessage = {
         ...messageData,
         _id: optimisticId,
-        text: messageData.text, // Show plain text in UI
+        text: messageData.text || "", // show plain text in UI (not encrypted)
         senderId: messageData.senderId,
         receiverId: selectedUser._id,
         createdAt: new Date().toISOString(),
@@ -143,15 +143,26 @@ sendMessage: async (messageData) => {
       // Optimistically update UI
       set({ messages: [...messages, optimisticMessage] });
 
-      // Send encrypted message to server
-      const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, {
+      // Prepare payload for backend
+      const payload = {
         senderId: messageData.senderId,
         text: encryptedText,
-      });
+      };
+
+      // Attach optional fields only if they exist
+      if (messageData.image) payload.image = messageData.image;
+      if (messageData.audio) payload.audio = messageData.audio;
+      if (messageData.document) {
+        payload.document = messageData.document;
+        payload.documentName = messageData.documentName || null;
+      }
+
+      // Send request
+      const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, payload);
 
       // Replace optimistic message with server-confirmed message
       const updatedMessages = get().messages.map((msg) =>
-        msg._id === optimisticId ? res.data : msg
+        msg._id === optimisticId ? res.data.data : msg // res.data.data assuming backend responds { data: newMessage }
       );
       set({ messages: updatedMessages });
     }

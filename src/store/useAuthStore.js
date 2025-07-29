@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 const BASE_URL = process.env.NODE_ENV === "development"
-  ? "http://localhost:4000"
+  ? "https://localhost:4000"
   : "/";
 
 

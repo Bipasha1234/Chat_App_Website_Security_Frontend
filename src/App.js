@@ -1,6 +1,6 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import AdminDashboardComponent from "./core/admin/adminDashboard.js";
 import PasswordReset from "./core/forgot-password.js";
@@ -12,19 +12,35 @@ import GroupChat from "./core/user/groupChat.js";
 import ProfilePage from "./core/user/profile.js";
 import Settings from "./core/user/settings.js";
 import VerifyMfa from "./core/verifyMfa.js";
+import { axiosInstance } from "./lib/axios.js";
 import { useAuthStore } from "./store/useAuthStore.js";
+
 
 // Replace with your test publishable key
 const stripePromise = loadStripe("pk_test_51Rp7ijEa2SJUqRgbuDZDNaaA617B1Da5ErS8FJGXH3CTlNr2c8KtUgbG188DVKHeaU9FbRjIp9hHVJ6ckj1zx8Lt00eytPJekh");
 
 function App() {
   const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
-
-  console.log({ onlineUsers });
+  const [csrfToken, setCsrfToken] = useState("");
 
   useEffect(() => {
+    // Fetch CSRF token on load
+    const fetchCsrfToken = async () => {
+      try {
+        const res = await axiosInstance.get("/csrf-token");
+        setCsrfToken(res.data.csrfToken);
+        // Set CSRF token as default for future POST/PUT/DELETE requests
+        axiosInstance.defaults.headers.common["X-CSRF-Token"] = res.data.csrfToken;
+        console.log("CSRF Token set:", res.data.csrfToken);
+      } catch (err) {
+        console.error("CSRF token fetch failed", err.message);
+      }
+    };
+
+    fetchCsrfToken();
     checkAuth();
   }, [checkAuth]);
+  console.log({ onlineUsers });
 
   console.log({ authUser });
 

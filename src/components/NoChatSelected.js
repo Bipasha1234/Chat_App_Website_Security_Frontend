@@ -7,17 +7,10 @@ const NoChatSelected = () => {
         <div className="flex justify-center items-center gap-1 mb-4">
 
         <h2 className="text-2xl font-bold">Welcome to MessageI!</h2>
-        
-          {/* <div className="relative">
-            <div
-              className="w-60 h-24 rounded-2xl flex items-center justify-center animate-bounce"
-            >
-              {/* <img src={chattix} alt="Chattix Icon" className="w-60 h-24" /> */}
-            {/* </div> */}
-          {/* </div> */} 
+      
         </div>
         <p className="text-sm">
-          Select a conversation from the Messaging sidebar to start chatting.
+          Please, select a conversation from the sidebar for chat.
         </p>
 
         

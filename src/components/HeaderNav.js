@@ -32,9 +32,6 @@ const HeaderNav = () => {
 
   return (
     <div className="w-full bg-blue-500 text-white shadow-md flex justify-around items-center py-2">
-                
-
-      
       {sidebarItems.map((item) => (
         <div
           key={item.id}

@@ -64,6 +64,18 @@ getMessages: async (userId) => {
     }
   },
 
+
+  getAdminLogs: async () => {
+  try {
+    const res = await axiosInstance.get("/admin-logs");
+    set({ adminLogData: res.data });  // You can customize this state key
+    return res.data;
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to fetch admin logs");
+    return null;
+  }
+},
+
   
 // Get group messages 
 getGroupMessages: async (groupId) => {

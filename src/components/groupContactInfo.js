@@ -148,7 +148,7 @@ const GroupContactInfo = ({ onClose }) => {
             <p className="text-xs ">Click the camera icon</p>
             {selectedFile && (
               <button
-                className="px-2 py-1  text-white underline text-xs rounded-lg hover:bg-gray-700"
+                className="px-2 py-1  text-white underline bg-blue-600 text-xs rounded-lg hover:bg-blue-800"
                 onClick={handleUpload}
               >
                 Upload
@@ -164,7 +164,7 @@ const GroupContactInfo = ({ onClose }) => {
                   type="text"
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="px-4 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 "
                 />
                 <button
                   onClick={handleNameChange}

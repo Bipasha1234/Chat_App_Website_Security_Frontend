@@ -1,3 +1,4 @@
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -11,59 +12,60 @@ const Register = () => {
     password: "",
   });
   const [error, setError] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
   const { signup, isSigningUp } = useAuthStore();
- const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
   const validateForm = () => {
-  const errors = {};
+    const errors = {};
 
-  if (!formData.fullName.trim()) errors.fullName = "Full Name is required";
+    if (!formData.fullName.trim()) errors.fullName = "Full Name is required";
 
-  if (!formData.email.trim()) errors.email = "Email is required";
-  else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Invalid email format";
+    if (!formData.email.trim()) errors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Invalid email format";
 
-  if (!formData.password) {
-    errors.password = "Password is required";
-  } else {
-    if (formData.password.length < 8)
-      errors.password = "Password must be at least 8 characters";
-    else if (formData.password.length > 64)
-      errors.password = "Password must be at most 64 characters";
-    else {
-      if (!/[A-Z]/.test(formData.password))
-        errors.password = "Password must contain at least one uppercase letter";
-      else if (!/[a-z]/.test(formData.password))
-        errors.password = "Password must contain at least one lowercase letter";
-      else if (!/\d/.test(formData.password))
-        errors.password = "Password must contain at least one digit";
-      else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password))
-        errors.password = "Password must contain at least one special character";
-    }
-  }
-
-  setError(errors);
-  return Object.keys(errors).length === 0;
-};
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (validateForm()) {
-    const result = await signup(formData);
-
-    if (result?.success) {
-      navigate("/login");
+    if (!formData.password) {
+      errors.password = "Password is required";
     } else {
-      // New: Handle email already exists error from backend
-      if (result?.message?.toLowerCase().includes("email already exists") || 
-          result?.message?.toLowerCase().includes("email is already registered")) {
-        setError((prev) => ({ ...prev, email: "This email is already registered" }));
-      } else if(result?.message) {
-        // General error if needed
-        toast.error(result.message);
+      if (formData.password.length < 8)
+        errors.password = "Password must be at least 8 characters";
+      else if (formData.password.length > 64)
+        errors.password = "Password must be at most 64 characters";
+      else {
+        if (!/[A-Z]/.test(formData.password))
+          errors.password = "Password must contain at least one uppercase letter";
+        else if (!/[a-z]/.test(formData.password))
+          errors.password = "Password must contain at least one lowercase letter";
+        else if (!/\d/.test(formData.password))
+          errors.password = "Password must contain at least one digit";
+        else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password))
+          errors.password = "Password must contain at least one special character";
       }
     }
-  }
-};
 
+    setError(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      const result = await signup(formData);
+
+      if (result?.success) {
+        navigate("/login");
+      } else {
+        if (
+          result?.message?.toLowerCase().includes("email already exists") ||
+          result?.message?.toLowerCase().includes("email is already registered")
+        ) {
+          setError((prev) => ({ ...prev, email: "This email is already registered" }));
+        } else if (result?.message) {
+          toast.error(result.message);
+        }
+      }
+    }
+  };
 
   return (
     <>
@@ -77,7 +79,10 @@ const handleSubmit = async (e) => {
           <form onSubmit={handleSubmit}>
             {/* Full Name */}
             <div className="mb-4">
-              <label htmlFor="fullName" className="block text-sm font-medium text-black mb-1">
+              <label
+                htmlFor="fullName"
+                className="block text-sm font-medium text-black mb-1"
+              >
                 Full Name
               </label>
               <input
@@ -87,14 +92,21 @@ const handleSubmit = async (e) => {
                   error.fullName ? "border-red-500" : "border-blue-300"
                 } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400`}
                 value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, fullName: e.target.value })
+                }
               />
-              {error.fullName && <p className="text-red-500 text-sm mt-1">{error.fullName}</p>}
+              {error.fullName && (
+                <p className="text-red-500 text-sm mt-1">{error.fullName}</p>
+              )}
             </div>
 
             {/* Email */}
             <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-black mb-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-black mb-1"
+              >
                 Email Address
               </label>
               <input
@@ -104,26 +116,46 @@ const handleSubmit = async (e) => {
                   error.email ? "border-red-500" : "border-blue-300"
                 } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400`}
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
               />
-              {error.email && <p className="text-red-500 text-sm mt-1">{error.email}</p>}
+              {error.email && (
+                <p className="text-red-500 text-sm mt-1">{error.email}</p>
+              )}
             </div>
 
-            {/* Password */}
-            <div className="mb-6">
-              <label htmlFor="password" className="block text-sm font-medium text-black mb-1">
+            {/* Password with eye toggle */}
+            <div className="mb-6 relative">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-black mb-1"
+              >
                 Password
               </label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 className={`w-full px-4 py-2 border ${
                   error.password ? "border-red-500" : "border-blue-300"
                 } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400`}
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
               />
-              {error.password && <p className="text-red-500 text-sm mt-1">{error.password}</p>}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute top-[38px] right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                tabIndex={-1}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+              {error.password && (
+                <p className="text-red-500 text-sm mt-1">{error.password}</p>
+              )}
             </div>
 
             {/* Submit Button */}

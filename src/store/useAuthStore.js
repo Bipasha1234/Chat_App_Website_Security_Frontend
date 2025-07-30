@@ -22,6 +22,8 @@ export const useAuthStore = create((set, get) => ({
   isCodeVerified: false,      // Track if the reset code has been verified
   errorMessage: "",           // Store any error messages
 
+
+
   // Forgot password - Sends a reset code to the user's email
   forgotPassword: async (email) => {
     set({ isResettingPassword: true });
@@ -34,6 +36,8 @@ export const useAuthStore = create((set, get) => ({
       set({ isResettingPassword: false });
     }
   },
+
+
 
   // Reset password - Verifies the reset code and changes the password
  resetPassword: async (email, password) => {
@@ -70,6 +74,8 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+
+
   // Check authentication status
   checkAuth: async () => {
     try {
@@ -83,7 +89,6 @@ export const useAuthStore = create((set, get) => ({
       set({ isCheckingAuth: false });
     }
   },
-
 
 
   
@@ -102,6 +107,7 @@ signup: async (data) => {
   }
 },
 
+
   logout: async () => {
     try {
       await axiosInstance.post("/auth/logout");
@@ -117,6 +123,7 @@ signup: async (data) => {
     }
   },
 
+
   updateProfile: async (data) => {
     set({ isUpdatingProfile: true });
     try {
@@ -130,6 +137,8 @@ signup: async (data) => {
       set({ isUpdatingProfile: false });
     }
   },
+
+
 
  login: async (data) => {
   set({ isLoggingIn: true });
@@ -148,6 +157,8 @@ signup: async (data) => {
     set({ isLoggingIn: false });
   }
 },
+
+
 
 verifyMfa: async ({ email, code }) => {
   set({ isLoggingIn: true });

@@ -34,14 +34,15 @@ export const useChatStore = create((set, get) => ({
       set({ isUsersLoading: false });
     }
   },
-  // Get individual messages and decrypt them
+
+
+
+  // Get individual messages 
 getMessages: async (userId) => {
   set({ isMessagesLoading: true });
 
   try {
     const res = await axiosInstance.get(`/messages/${userId}`);
-
-    // No decrypting here, backend sends plain text
     set({ messages: res.data });
   } catch (error) {
     toast.error(error.response?.data?.message || "Failed to load messages");
@@ -63,14 +64,14 @@ getMessages: async (userId) => {
     }
   },
 
-// Get group messages and decrypt them
+  
+// Get group messages 
 getGroupMessages: async (groupId) => {
   set({ isGroupsLoading: true });
 
   try {
     const res = await axiosInstance.get(`/groups/messages/${groupId}`);
 
-    // No decrypting here, backend sends plain text
     set({
       messages: res.data.messages,
       profilePic: res.data.profilePic,
@@ -84,15 +85,12 @@ getGroupMessages: async (groupId) => {
 },
 
 
-// Send group message with encryption
+// Send group message
 sendGroupMessage: async (messageData) => {
   const { selectedGroup, messages } = get();
   try {
     if (selectedGroup) {
-      // Send plain text directly
       const res = await axiosInstance.post(`/groups/messages/${selectedGroup._id}`, messageData);
-
-      // No decrypting, backend sends plain text message
       const newMessage = res.data.newMessage || res.data;
 
       set({ messages: [...messages, newMessage] });
@@ -147,8 +145,6 @@ sendMessage: async (messageData) => {
 },
 
 
-  
-
   deleteChat: async (userId) => {
     try {
       await axiosInstance.delete(`/messages/delete/${userId}`);
@@ -168,6 +164,8 @@ sendMessage: async (messageData) => {
     }
   },  
 
+
+
   getBlockedUsers: async () => {
     try {
       const res = await axiosInstance.get("/messages/users/blocked");
@@ -176,6 +174,8 @@ sendMessage: async (messageData) => {
       toast.error(error.response?.data?.message || "Failed to fetch blocked users");
     }
   },
+
+
 
   blockUser: async (userId) => {
     try {
@@ -192,6 +192,8 @@ sendMessage: async (messageData) => {
       toast.error(error.response?.data?.message || "Failed to block user");
     }
   },
+
+
 
   unblockUser: async (userId) => {
     try {
@@ -212,34 +214,6 @@ sendMessage: async (messageData) => {
     }
   },
 
-  markAsSeen: async (userId) => {
-    try {
-      await axiosInstance.post("/messages/mark-seen", { senderId: userId });
-
-      set((state) => ({
-        users: state.users.map(user =>
-          user._id === userId ? { ...user, isUnread: false } : user
-        ),
-      }));
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to mark messages as seen");
-    }
-  },
-
-  markAsUnread: async (userId) => {
-    try {
-      await axiosInstance.post(`/messages/mark-unread/${userId}`);
-      toast.success("Chat marked as unread");
-
-      set((state) => ({
-        users: state.users.map(user =>
-          user._id === userId ? { ...user, isUnread: true } : user
-        ),
-      }));
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to mark as unread");
-    }
-  },
 
   subscribeToMessages: () => {
     const { selectedUser } = get();
@@ -262,14 +236,8 @@ sendMessage: async (messageData) => {
     socket.off("newMessage");
   },
 
-  // setSelectedUser: (selectedUser) => set({ selectedUser }),
-
   setSelectedUser: (selectedUser) => {
     set({ selectedUser });
-
-    if (selectedUser) {
-      get().markAsSeen(selectedUser._id);
-    }
   },
 
 
@@ -285,12 +253,13 @@ sendMessage: async (messageData) => {
     }
   },
 
+
   createGroup: async (groupData) => {
     try {
-        console.log("➡️ Sending Create Group Request:", groupData);
+   
 
         if (!groupData.groupName || !groupData.members || groupData.members.length < 2) {
-            console.error("❌ Invalid Group Data:", groupData);
+            console.error(" Invalid Group Data:", groupData);
             toast.error("Group name and at least 2 members are required");
             return;
         }
@@ -307,7 +276,7 @@ sendMessage: async (messageData) => {
             throw new Error("Group creation failed");
         }
     } catch (error) {
-        console.error("❌ Error Creating Group:", error.response?.data || error.message);
+        console.error(" Error Creating Group:", error.response?.data || error.message);
         toast.error(error.response?.data?.message || "Failed to create group");
     }
 },
@@ -407,6 +376,8 @@ leaveGroup: async (groupId) => {
     toast.error(error.response?.data?.message || "Failed to leave group");
   }
 },
+
+
   createTipPaymentIntent: async ({ amount, tipperId, receiverId }) => {
     try {
       const res = await axiosInstance.post("/payments/create-payment-intent", {
@@ -421,6 +392,9 @@ leaveGroup: async (groupId) => {
       return null;
     }
   },
+
+
+
   saveTip: async ({ tipperId, receiverId, amount,messageId,transactionId }) => {
   try {
     const res = await axiosInstance.post("/payments/save-tip", {
@@ -437,6 +411,7 @@ leaveGroup: async (groupId) => {
     return null;
   }
 },
+
 
 getTipByMessageId: async (messageId) => {
   try {

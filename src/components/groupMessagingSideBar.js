@@ -3,7 +3,14 @@ import groupUserIcon from "../assets/images/group.png";
 import { useChatStore } from "../store/useChatStore";
 
 const GroupSidebar = () => {
-  const { getGroups, groups, selectedGroup, setSelectedGroup, isGroupsLoading, getGroupMessages } = useChatStore();
+  const {
+    getGroups,
+    groups,
+    selectedGroup,
+    setSelectedGroup,
+    isGroupsLoading,
+    getGroupMessages,
+  } = useChatStore();
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -22,7 +29,7 @@ const GroupSidebar = () => {
 
   return (
     <>
-      <aside className="h-[calc(100vh-4rem)] w-96 border-r bg-white border-blue-200 flex flex-col shadow font-open-sans relative ">
+      <aside className="h-[calc(100vh-4rem)] w-96 border-r bg-white border-blue-200 flex flex-col shadow font-open-sans relative">
         <div className="p-4 flex items-center justify-between shadow-md dark:bg-base-800 bg-blue-100">
           <h1 className="text-lg font-bold text-base-content dark:text-base-content">
             Groups
@@ -34,32 +41,31 @@ const GroupSidebar = () => {
             filteredGroups.map((group) => (
               <div
                 key={group._id}
-                className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all  ${
+                className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all ${
                   selectedGroup?._id === group._id
-                    ? "bg-blue-100  "
-                    : "hover:bg-blue-50 "
+                    ? "bg-blue-100"
+                    : "hover:bg-blue-50"
                 }`}
                 onClick={() => handleGroupClick(group)}
               >
-                <div className="relative mx-auto lg:mx-0 border-2 border-gray-300 rounded-full">
+                <div className="flex-shrink-0 border-2 border-gray-300 rounded-full">
                   <img
                     src={group.profilePic || groupUserIcon}
                     alt={group.name}
                     className="size-12 object-cover rounded-full"
                   />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <div className="truncate font-semibold text-base-content dark:text-base-content">
                     {group.name}
                   </div>
-                  <div className="text-xs truncate text-gray-500 dark:text-gray-400">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
                     {group.latestMessage ? (
                       <>
                         <span className="font-medium">
                           {group.latestMessage.sender}:{" "}
                         </span>
-                        {/* Directly display plain text from backend */}
-                        {group.latestMessage.text}
+                        <span className="truncate">{group.latestMessage.text}</span>
                       </>
                     ) : (
                       "No messages yet"

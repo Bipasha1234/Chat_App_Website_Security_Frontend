@@ -21,7 +21,6 @@ const CreateGroupModal = ({ onClose, selectedChats }) => {
     }
 
     try {
-      console.log("Creating Group:", { groupName, members: selectedChats });
 
       await createGroup({ groupName, members: selectedChats });
 

@@ -83,7 +83,6 @@ const AdminDashboardComponent = () => {
             {adminLogData?.length > 0 ? (
               adminLogData.slice(0, 20).map((log, index) => (
                 <tr key={index}>
-                  {/* Render user email or _id if email missing */}
                   <td className="px-4 py-3">{ log.userId?.fullName || "Unknown User"}</td>
                   <td className="px-4 py-3">{log.action}</td>
                   <td className="px-4 py-3">{log.ip || "N/A"}</td>

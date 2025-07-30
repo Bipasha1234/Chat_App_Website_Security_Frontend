@@ -65,6 +65,19 @@ const Settings = () => {
                   Logout
                 </button>
               </div>
+
+
+
+              {/* Forgot Password Button */}
+        <div className="mt-4 flex items-center justify-center">
+          <button
+            onClick={() => navigate("/forgot-password")}
+            className="bg-blue-600 w-40 py-2 px-4 text-white flex items-center justify-center font-medium rounded-md shadow-md hover:bg-blue-700"
+          >
+            Forgot Password
+          </button>
+        </div>
+
             </div>
           )}
 

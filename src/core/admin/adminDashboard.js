@@ -37,7 +37,7 @@ const AdminDashboardComponent = () => {
   return (
     <div className="min-h-screen bg-blue-50 font-sans">
       {/* Header */}
-      <header className="bg-blue-700 text-white px-8 py-5 flex justify-between items-center shadow-md">
+      <header className="bg-blue-500 text-white px-8 py-5 flex justify-between items-center shadow-md">
         <h1 className="text-2xl font-bold">MessageI</h1>
         <button
           onClick={logout}

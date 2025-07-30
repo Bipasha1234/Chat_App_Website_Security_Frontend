@@ -1,4 +1,4 @@
-import { LogOut } from "lucide-react"; // optional: can use any icon set
+import { LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useChatStore } from "../../store/useChatStore";
@@ -8,11 +8,13 @@ const AdminDashboardComponent = () => {
   const getGroups = useChatStore((s) => s.getGroups);
   const getMessages = useChatStore((s) => s.getMessages);
   const getAdminDashboard = useChatStore((s) => s.getAdminDashboard);
+  const getAdminLogs = useChatStore((s) => s.getAdminLogs);
 
   const users = useChatStore((s) => s.users);
   const groups = useChatStore((s) => s.groups);
   const messages = useChatStore((s) => s.messages);
   const adminDashboardData = useChatStore((s) => s.adminDashboardData);
+  const adminLogData = useChatStore((s) => s.adminLogData);
   const logout = useAuthStore((s) => s.logout);
 
   const [loading, setLoading] = useState(true);
@@ -24,6 +26,7 @@ const AdminDashboardComponent = () => {
       await getGroups();
       if (users.length > 0) await getMessages(users[0]._id);
       await getAdminDashboard();
+      await getAdminLogs();
       setLoading(false);
     }
     loadData();
@@ -61,6 +64,45 @@ const AdminDashboardComponent = () => {
         <StatCard title="Tips Given" value={adminDashboardData?.totalTips || 0} desc="Tips shared across users." />
         <StatCard title="Online Users Now" value={adminDashboardData?.onlineUsers || 0} desc="Users currently active." />
       </main>
+
+      {/* Activity Logs Section */}
+      <section className="px-6 pb-10">
+        <h3 className="text-xl text-blue-800 font-semibold mb-4 mt-6">Recent Activity Logs</h3>
+        <div className="overflow-auto rounded-lg shadow bg-white">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-blue-100">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-medium text-blue-800">User ID</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-blue-800">Action</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-blue-800">IP</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-blue-800">User Agent</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-blue-800">Time</th>
+              </tr>
+            </thead>
+          <tbody className="divide-y divide-gray-100 text-gray-700 text-sm">
+            {adminLogData?.length > 0 ? (
+              adminLogData.slice(0, 20).map((log, index) => (
+                <tr key={index}>
+                  {/* Render user email or _id if email missing */}
+                  <td className="px-4 py-3">{ log.userId?.fullName || "Unknown User"}</td>
+                  <td className="px-4 py-3">{log.action}</td>
+                  <td className="px-4 py-3">{log.ip || "N/A"}</td>
+                  <td className="px-4 py-3 truncate">{log.userAgent?.slice(0, 50)}...</td>
+                  <td className="px-4 py-3">{new Date(log.timestamp).toLocaleString()}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className="px-4 py-3 text-gray-500" colSpan="5">
+                  No logs available.
+                </td>
+              </tr>
+            )}
+          </tbody>
+
+          </table>
+        </div>
+      </section>
     </div>
   );
 };

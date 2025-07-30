@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaCog, FaComments, FaUserCircle, FaUsers } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 
+
 const HeaderNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,15 +29,19 @@ const HeaderNav = () => {
     navigate(item.route);
   };
 
+
   return (
-    <div className="w-full bg-blue-500 text-white shadow-md flex justify-around items-center py-4">
+    <div className="w-full bg-blue-500 text-white shadow-md flex justify-around items-center py-2">
+                
+
+      
       {sidebarItems.map((item) => (
         <div
           key={item.id}
           onClick={() => handleTabClick(item)}
           className={`flex flex-col items-center cursor-pointer transition-all duration-200 px-3
             ${activeTab === item.id 
-              ? "text-white font-semibold" 
+              ? "text-white font-normal text-xs" 
               : "hover:text-blue-200"
             }`}
           title={item.label}

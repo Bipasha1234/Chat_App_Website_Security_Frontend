@@ -1,5 +1,6 @@
 import { ChevronRight, UserX, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { MdPassword } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import ChatContainer from "../../components/ChatContainer";
 import HeaderNav from "../../components/HeaderNav";
@@ -46,12 +47,23 @@ const Settings = () => {
 
               {/* Blocked Accounts Option */}
               <div
-                className="mt-4 flex items-center justify-between cursor-pointer transition hover:bg-gray-100 p-2 rounded"
+                className="mt-4 flex items-center justify-between cursor-pointer transition hover:bg-gray-100 p-3 rounded"
                 onClick={() => setActivePanel("blocked")}
               >
                 <div className="flex items-center gap-4">
                   <UserX size={22} className="text-red-600" />
                   <h3 className="text-base font-medium text-red-600">Blocked Accounts</h3>
+                </div>
+                <ChevronRight size={22} />
+              </div>
+
+              <div
+                className=" flex items-center justify-between cursor-pointer transition hover:bg-gray-100 p-3 rounded"
+                onClick={() => navigate("/forgot-password")}
+              >
+                <div className="flex items-center gap-4">
+                  <MdPassword size={22} className="text-black" />
+                  <h3 className="text-base font-medium text-black">Reset your password</h3>
                 </div>
                 <ChevronRight size={22} />
               </div>
@@ -65,18 +77,6 @@ const Settings = () => {
                   Logout
                 </button>
               </div>
-
-
-
-              {/* Forgot Password Button */}
-        <div className="mt-4 flex items-center justify-center">
-          <button
-            onClick={() => navigate("/forgot-password")}
-            className="bg-blue-600 w-40 py-2 px-4 text-white flex items-center justify-center font-medium rounded-md shadow-md hover:bg-blue-700"
-          >
-            Forgot Password
-          </button>
-        </div>
 
             </div>
           )}

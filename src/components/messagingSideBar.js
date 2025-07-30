@@ -69,7 +69,8 @@ const MessagingSidebar = () => {
 
   return (
     <>
-      <aside className="h-full w-96 border-r bg-white border-blue-200 flex flex-col shadow font-open-sans relative">
+   <aside className="h-[580px] w-96 border-r bg-white border-blue-200 flex flex-col shadow font-open-sans relative">
+
         {/* Top bar */}
         {!isSelectingChats ? (
           <div className="p-4 flex items-center justify-between shadow-md bg-blue-100">

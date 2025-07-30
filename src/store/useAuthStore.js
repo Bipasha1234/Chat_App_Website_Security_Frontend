@@ -83,6 +83,10 @@ export const useAuthStore = create((set, get) => ({
       set({ isCheckingAuth: false });
     }
   },
+
+
+
+  
 signup: async (data) => {
   set({ isSigningUp: true });
   try {
@@ -148,12 +152,12 @@ signup: async (data) => {
 verifyMfa: async ({ email, code }) => {
   set({ isLoggingIn: true });
   try {
-    // Assuming your backend expects { email, code } and returns user info + token on success
     const res = await axiosInstance.post("/auth/verify-mfa", { email, code });
-    set({ authUser: res.data });
+    // res.data = { token, user }
+    set({ authUser: res.data.user });  // Set only user to authUser
     toast.success("MFA verification successful");
     get().connectSocket();
-    return res.data;
+    return res.data;  // return full data with token and user
   } catch (error) {
     const errorMsg = error.response?.data?.message || "MFA verification failed";
     toast.error(errorMsg);
@@ -162,6 +166,7 @@ verifyMfa: async ({ email, code }) => {
     set({ isLoggingIn: false });
   }
 },
+
   
   connectSocket: () => {
     const { authUser } = get();

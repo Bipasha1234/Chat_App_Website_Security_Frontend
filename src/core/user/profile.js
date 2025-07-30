@@ -45,7 +45,7 @@ const ProfilePage = () => {
       {/* Main Content */}
       <div className="flex flex-1 ">
         {/* Left Panel - Profile */}
-        <div className="w-full md:w-96 p-6 bg-white border-r overflow-y-auto ">
+        <div className="w-full  p-6 bg-white border-r overflow-y-auto ">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">Profile</h2>
 
           {/* Avatar Upload */}
@@ -139,7 +139,6 @@ const ProfilePage = () => {
                 <span>Member Since:</span>
                 <span>{authUser.createdAt?.split("T")[0]}</span>
               </div>
-             
             </div>
           </div>
         </div>

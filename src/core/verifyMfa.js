@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useAuthStore } from "../store/useAuthStore";
 
 const VerifyMfa = () => {
-  const { verifyMfa, isLoggingIn } = useAuthStore();
+  const { verifyMfa, setAuthUser, isLoggingIn } = useAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -22,25 +22,23 @@ const VerifyMfa = () => {
     }
 
     const response = await verifyMfa({ email, code: mfaCode });
-    if (response?.token) {
-  toast.success("MFA verification successful");
+    if (response?.token && response?.user) {
+      toast.success("MFA verification successful");
 
-  if (response.user.role === "admin") {
-    navigate("/admin-dashboard");
-  } else {
-    navigate("/chat");
-  }
-} else {
-  setError({ general: response?.message || "Invalid verification code" });
-  toast.error(response?.message || "Invalid verification code");
-}
+      // Update global auth state here
+      setAuthUser(response.user);
+
+      // No manual navigation here! App component handles routing based on authUser role
+    } else {
+      setError({ general: response?.message || "Invalid verification code" });
+      toast.error(response?.message || "Invalid verification code");
+    }
   };
 
   if (!email) {
     navigate("/login");
     return null;
   }
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4 font-open-sans">
       <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md border border-blue-200">

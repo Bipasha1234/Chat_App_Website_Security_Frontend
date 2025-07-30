@@ -17,7 +17,7 @@ function MainHome() {
             Connect Seamlessly with Your Loved Ones
           </h1>
           <p className="text-lg text-black max-w-md">
-            Private chats, group conversations, voice messages, stickers, and more all in one secure platform.
+            Private chats, group conversations, voice messages, file sending, and more all in one secure platform.
           </p>
           <div className="flex gap-6">
             <button

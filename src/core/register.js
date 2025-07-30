@@ -72,7 +72,7 @@ const Register = () => {
       <Header />
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 font-open-sans px-4">
         <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md border border-blue-200">
-          <h2 className="text-3xl font-bold text-black text-center mb-6">
+          <h2 className="text-2xl font-bold text-black text-center mb-6">
             Create Your Account
           </h2>
 

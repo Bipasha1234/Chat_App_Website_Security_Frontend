@@ -116,7 +116,7 @@ sendMessage: async (messageData) => {
   const { selectedUser, messages } = get();
   try {
     if (selectedUser) {
-      // Optimistic UI update with plain text
+      // Optimistic UI update
       const optimisticId = Date.now();
       const optimisticMessage = {
         ...messageData,
@@ -130,14 +130,12 @@ sendMessage: async (messageData) => {
 
       set({ messages: [...messages, optimisticMessage] });
 
-      // Prepare payload with plain text
+      // Prepare payload with text and document
       const payload = {
         senderId: messageData.senderId,
         text: messageData.text || null,
       };
 
-      if (messageData.image) payload.image = messageData.image;
-      if (messageData.audio) payload.audio = messageData.audio;
       if (messageData.document) {
         payload.document = messageData.document;
         payload.documentName = messageData.documentName || null;
@@ -145,7 +143,7 @@ sendMessage: async (messageData) => {
 
       const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, payload);
 
-      // Replace optimistic with confirmed message (plain text)
+      // Replace optimistic with actual message
       const updatedMessages = get().messages.map((msg) =>
         msg._id === optimisticId ? res.data.data : msg
       );
@@ -228,20 +226,23 @@ sendMessage: async (messageData) => {
 
 
   subscribeToMessages: () => {
-    const { selectedUser } = get();
-    if (!selectedUser) return;
+  const { selectedUser } = get();
+  const { authUser, socket } = useAuthStore.getState();
+  if (!selectedUser || !authUser) return;
 
-    const socket = useAuthStore.getState().socket;
+  socket.on("newMessage", (newMessage) => {
+    const isRelevantMessage =
+      (newMessage.senderId === selectedUser._id && newMessage.receiverId === authUser._id) ||
+      (newMessage.receiverId === selectedUser._id && newMessage.senderId === authUser._id);
 
-    socket.on("newMessage", (newMessage) => {
-      const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
-      if (!isMessageSentFromSelectedUser) return;
+    if (!isRelevantMessage) return;
 
-      set({
-        messages: [...get().messages, newMessage],
-      });
+    set({
+      messages: [...get().messages, newMessage],
     });
-  },
+  });
+},
+
 
   unsubscribeFromMessages: () => {
     const socket = useAuthStore.getState().socket;

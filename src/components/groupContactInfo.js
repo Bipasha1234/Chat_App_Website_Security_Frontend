@@ -1,4 +1,4 @@
-import { Camera, Edit3Icon, Image, LogOutIcon, PlusCircle, X } from "lucide-react";
+import { Camera, Edit3Icon, LogOutIcon, PlusCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { MdGroup } from "react-icons/md";
 
@@ -194,16 +194,6 @@ const GroupContactInfo = ({ onClose }) => {
 
           <div className="flex items-start justify-between w-full text-xs  border-b py-3">
             Group created by {selectedGroup.admin?.fullName || "Unknown"} on {formattedDate || "Unknown Date"}
-          </div>
-
-          {/* Add User and Media Buttons */}
-          <div className="mt-6 w-full">
-            <button
-              className="w-full flex items-center gap-3 py-2 px-2 font-semibold rounded-lg hover:bg-base-200 transition duration-200"
-              onClick={() => setShowMediaFiles(true)}
-            >
-              <Image size={22} className="" /> Gallery & Docs
-            </button>
           </div>
 
           <div className="w-full flex items-start justify-between">

@@ -72,7 +72,7 @@ const ChatContainer = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto ">
+    <div className="flex-1 flex flex-col overflow-auto">
       <ChatHeader onSearch={setSearchQuery} />
 
       {/* Chat Messages Section */}
@@ -84,7 +84,6 @@ const ChatContainer = () => {
               key={message._id || `message-${index}`}
               className={`flex ${isSender ? "justify-end" : "justify-start"}`}
             >
-              {/* Sender's Profile Picture (only on received messages) */}
               {!isSender && (
                 <div className="mr-3 mt-auto">
                   <div className="w-12 h-12 rounded-full border-2 border-blue-400 overflow-hidden shadow-sm">
@@ -97,7 +96,6 @@ const ChatContainer = () => {
                 </div>
               )}
 
-              {/* Message bubble */}
               <div
                 className={`max-w-[70%] px-5 py-3 rounded-2xl shadow-md
                   ${isSender
@@ -111,27 +109,6 @@ const ChatContainer = () => {
                   </p>
                 )}
 
-                {message.image && (
-                  <img
-                    src={message.image}
-                    alt="Attachment"
-                    className="w-44 h-44 rounded-lg mt-3 object-cover shadow"
-                  />
-                )}
-
-                {message.audio && (
-                  <div className="flex items-center gap-3 bg-blue-100 p-2 rounded-lg shadow-md mt-3">
-                    <audio
-                      controls
-                      className="w-full"
-                      style={{ height: "34px", borderRadius: "8px", backgroundColor: "white" }}
-                    >
-                      <source src={message.audio} type="audio/webm" />
-                      Your browser does not support the audio element.
-                    </audio>
-                  </div>
-                )}
-
                 {message.document && (
                   <div className="flex items-center gap-3 bg-blue-100 p-3 rounded-lg shadow-md mt-3 max-w-xs">
                     <File size={22} className="text-blue-600" />
@@ -140,14 +117,7 @@ const ChatContainer = () => {
                         {message.documentName || "Document"}
                       </p>
                       <button
-                        onClick={() => {
-                          const fileExtension = message.document.split(".").pop();
-                          if (["pdf", "jpg", "png"].includes(fileExtension.toLowerCase())) {
-                            window.open(message.document, "_blank");
-                          } else {
-                            window.location.href = message.document;
-                          }
-                        }}
+                        onClick={() => window.open(message.document, "_blank")}
                         className="text-blue-700 text-xs hover:underline"
                       >
                         Tap to Open
@@ -165,15 +135,12 @@ const ChatContainer = () => {
                 )}
 
                 <time
-                  className={`block mt-2 text-xs opacity-70 ${
-                    isSender ? "text-blue-100 text-right" : "text-blue-700 text-left"
-                  }`}
+                  className={`block mt-2 text-xs opacity-70 ${isSender ? "text-blue-100 text-right" : "text-blue-700 text-left"}`}
                 >
                   {formatMessageTime(message.createdAt)}
                 </time>
               </div>
 
-              {/* Sender's Profile Picture (only for sent messages) */}
               {isSender && (
                 <div className="ml-3 mt-auto">
                   <div className="w-12 h-12 rounded-full border-2 border-blue-600 overflow-hidden shadow-sm">
